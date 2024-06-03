@@ -18,7 +18,7 @@ const AccountMenu = ({ visible }) => {
         <div className="px-3 group/item flex flex-row gap-3 items-center w-full">
           <img
             className="w-8 rounded-md"
-            src="/images/default-blue.png"
+            src="public/images/default-blue.png"
             alt=""
           />
           <p className="text-white text-sm group-hover/item:underline">
