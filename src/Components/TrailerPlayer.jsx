@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
-// import TMDB from "../API/api.js";
+import TMDB from "../API/api.js";
 
-// const tmdb = new TMDB(import.meta.env.VITE_TMDB_API_KEY);
+const tmdb = new TMDB(import.meta.env.VITE_TMDB_API_KEY);
 
 const TrailerPlayer = ({ mediaType, mediaID }) => {
   const [trailerUrl, setTrailerUrl] = useState("");
