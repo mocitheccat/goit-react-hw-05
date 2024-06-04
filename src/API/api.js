@@ -7,6 +7,7 @@ class TMDB {
   #multiSearchParams;
   #fullMediaData;
   #trailerParams;
+  #trendingParams;
 
   constructor(apiKey) {
     this.#apiKey = apiKey;
@@ -24,14 +25,17 @@ class TMDB {
     this.#trailerParams = {
       language: this.#baseLanguage,
     };
+    this.#trendingParams = {
+      language: this.#baseLanguage,
+    };
   }
 
-  createUrl(endpoint) {
+  #createUrl(endpoint) {
     return `${this.#baseUrl}${endpoint}`;
   }
 
-  async makeRequest(endpoint, params = {}) {
-    const url = this.createUrl(endpoint);
+  async #makeRequest(endpoint, params = {}) {
+    const url = this.#createUrl(endpoint);
     try {
       const response = await axios.get(url, {
         params: {
@@ -64,7 +68,7 @@ class TMDB {
    */
   async multiSearch(query, params = {}) {
     const searchParams = { ...this.#multiSearchParams, ...params, query };
-    return await this.makeRequest("/search/multi", searchParams);
+    return await this.#makeRequest("/search/multi", searchParams);
   }
 
   /**
@@ -79,12 +83,19 @@ class TMDB {
    */
   async getFullMediaData(mediaType, mediaID, params = {}) {
     const fullMediaDataParams = { ...this.#fullMediaData, ...params };
-    return await this.makeRequest(
+    return await this.#makeRequest(
       `/${mediaType}/${mediaID}`,
       fullMediaDataParams,
     );
   }
 
+  /**
+   * Retrieves the URL of a YouTube video from its ID.
+   *
+   * @param {string} youtubeVideoURL - The URL of the YouTube video.
+   * @returns {Promise<object>} - A promise that resolves to the video details.
+   * @throws {Error} - If an error occurs during the request.
+   */
   async #getVideoUrl(youtubeVideoURL) {
     const options = {
       method: "GET",
@@ -103,12 +114,23 @@ class TMDB {
       return response.data;
     } catch (error) {
       console.error(error);
+      throw error;
     }
   }
 
+  /**
+   * Retrieves the URL of a YouTube video from its ID.
+   *
+   * @param {string} mediaType - The type of media to retrieve details for.
+   * @param {number} mediaID - The ID of the media item to retrieve details for.
+   * @param {object} [params] - Additional parameters for the request.
+   * @param {string} [params.language] - The language of the requested details.
+   * @returns {Promise<object>} - A promise that resolves to the full details of the media item.
+   * @throws {Error} - If an error occurs during the request.
+   */
   async getTrailer(mediaType, mediaID, params = {}) {
     const trailerParams = { ...this.#trailerParams, ...params };
-    const response = await this.makeRequest(
+    const response = await this.#makeRequest(
       `/${mediaType}/${mediaID}/videos`,
       trailerParams,
     );
@@ -141,8 +163,14 @@ class TMDB {
     }
   }
 
+  /**
+   * Finds a fitting quality MP4 trailer from the provided videos.
+   *
+   * @param {Array<Object>} videos - An array of video objects.
+   * @returns {string|null} - The URL of the fitting quality MP4 trailer, or null if no suitable trailer is found.
+   */
   #findFittableQualityMp4Trailer(videos) {
-    const maxQuality = 480; // Максимальна якість, яку шукаємо (480p)
+    const maxQuality = 480; // Max default q-ty, may change later
 
     const mp4VideoWithoutAudio = videos
       .filter((video) => video.mimeType.includes("video/mp4"))
@@ -161,6 +189,23 @@ class TMDB {
     }
 
     return mp4VideoWithoutAudio[0].url;
+  }
+
+  /**
+   * Retrieves the trending media items for a specified time window.
+   *
+   * @param {string} [timeWindow="day"] - The time window for the trending data. Can be "day" or "week". Defaults to "day".
+   * @param {object} [params] - Additional parameters for the request.
+   * @param {string} [params.language] - The language of the requested trending data.
+   * @returns {Promise<object>} - A promise that resolves to the trending data.
+   * @throws {Error} - If an error occurs during the request.
+   */
+  async getTrending(timeWindow = "day", params = {}) {
+    const trendingParams = { ...this.#trendingParams, ...params };
+    return await this.#makeRequest(
+      `/trending/all/${timeWindow}`,
+      trendingParams,
+    );
   }
 }
 
