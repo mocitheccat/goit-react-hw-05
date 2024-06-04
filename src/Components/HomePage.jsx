@@ -1,12 +1,11 @@
-import { useNavigate } from "react-router-dom";
-import Auth from "../utils/auth.js";
 import Navbar from "./Navbar.jsx";
+import MoviePage from "./MoviePage.jsx";
 
 const HomePage = () => {
-  const navigate = useNavigate();
   return (
     <>
       <Navbar />
+      <MoviePage mediaType="movie" mediaID="786892" />
     </>
   );
 };

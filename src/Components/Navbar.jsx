@@ -1,5 +1,5 @@
 import NavbarItem from "./NavbarItem.jsx";
-import { BsBell, BsChevronDown, BsSearch } from "react-icons/bs";
+import { BsChevronDown, BsSearch } from "react-icons/bs";
 import MobileMenu from "./MobileMenu.jsx";
 import { useCallback, useEffect, useState } from "react";
 import AccountMenu from "./AccountMenu.jsx";
@@ -62,9 +62,6 @@ const Navbar = () => {
         <div className="flex flex-row ml-auto gap-7 items-center">
           <div className="text-gray-200 hover:text-gray-300 cursor-pointer">
             <BsSearch />
-          </div>
-          <div className="text-gray-200 hover:text-gray-300 cursor-pointer">
-            <BsBell />
           </div>
           <div
             onClick={toggleAccountMenu}
