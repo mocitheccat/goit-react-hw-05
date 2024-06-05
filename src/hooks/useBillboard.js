@@ -1,0 +1,43 @@
+import { useState, useEffect } from "react";
+import {
+  createFullImgUrl,
+  createRandomMediaBackdropImage,
+} from "../utils/helpers";
+
+const useBillboard = (tmdb, imageWidth = 0) => {
+  const [randomMediaDataShort, setRandomMediaDataShort] = useState(null);
+  const [randomBackdropImgForMedia, setRandomBackdropImgForMedia] =
+    useState(null);
+
+  useEffect(() => {
+    const getRandomMovieData = async () => {
+      try {
+        const trending = await tmdb.getTrending();
+        const randomMediaDataShort =
+          trending[Math.floor(Math.random() * trending.length)];
+
+        const mediaImages = await tmdb.getMediaImages(
+          randomMediaDataShort.media_type,
+          randomMediaDataShort.id
+        );
+
+        const randomBackdropImgForMedia = createRandomMediaBackdropImage(
+          createFullImgUrl(imageWidth, mediaImages)
+        );
+
+        setRandomMediaDataShort(randomMediaDataShort);
+        console.log(randomMediaDataShort);
+        setRandomBackdropImgForMedia(randomBackdropImgForMedia);
+        console.log(randomBackdropImgForMedia);
+      } catch (error) {
+        console.error("Error fetching random movie data:", error);
+      }
+    };
+
+    getRandomMovieData();
+  }, [tmdb, imageWidth]);
+
+  return { randomMediaDataShort, randomBackdropImgForMedia };
+};
+
+export default useBillboard;

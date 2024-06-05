@@ -1,11 +1,13 @@
+import Billboard from "./Billboard.jsx";
 import Navbar from "./Navbar.jsx";
-import MoviePage from "./MoviePage.jsx";
+// import MoviePage from "./MoviePage.jsx";
 
 const HomePage = () => {
   return (
     <>
       <Navbar />
-      <MoviePage mediaType="movie" mediaID="786892" />
+      {/* <MoviePage mediaType="movie" mediaID="786892" /> */}
+      <Billboard />
     </>
   );
 };

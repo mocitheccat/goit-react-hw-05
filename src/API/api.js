@@ -85,127 +85,144 @@ class TMDB {
     const fullMediaDataParams = { ...this.#fullMediaData, ...params };
     return await this.#makeRequest(
       `/${mediaType}/${mediaID}`,
-      fullMediaDataParams,
+      fullMediaDataParams
     );
   }
 
-  /**
-   * Retrieves the URL of a YouTube video from its ID.
-   *
-   * @param {string} youtubeVideoURL - The URL of the YouTube video.
-   * @returns {Promise<object>} - A promise that resolves to the video details.
-   * @throws {Error} - If an error occurs during the request.
-   */
-  async #getVideoUrl(youtubeVideoURL) {
-    const options = {
-      method: "GET",
-      url: import.meta.env.VITE_X_RAPIDAPI_URL,
-      params: {
-        url: youtubeVideoURL,
-      },
-      headers: {
-        "x-rapidapi-key": import.meta.env.VITE_X_RAPIDAPI_KEY,
-        "x-rapidapi-host": import.meta.env.VITE_X_RAPIDAPI_HOST,
-      },
-    };
-
-    try {
-      const response = await axios.request(options);
-      return response.data;
-    } catch (error) {
-      console.error(error);
-      throw error;
-    }
-  }
-
-  /**
-   * Retrieves the URL of a YouTube video from its ID.
-   *
-   * @param {string} mediaType - The type of media to retrieve details for.
-   * @param {number} mediaID - The ID of the media item to retrieve details for.
-   * @param {object} [params] - Additional parameters for the request.
-   * @param {string} [params.language] - The language of the requested details.
-   * @returns {Promise<object>} - A promise that resolves to the full details of the media item.
-   * @throws {Error} - If an error occurs during the request.
-   */
-  async getTrailer(mediaType, mediaID, params = {}) {
-    const trailerParams = { ...this.#trailerParams, ...params };
-    const response = await this.#makeRequest(
-      `/${mediaType}/${mediaID}/videos`,
-      trailerParams,
-    );
-    const videos = response.results;
-
-    const trailer = videos.find(
-      (video) => video?.type === "Trailer" && video?.site === "YouTube",
-    );
-    if (trailer) {
-      // return `https://www.youtube.com/watch?v=${trailer.key}`  for iframe;
-      const videoData = await this.#getVideoUrl(
-        `https://youtu.be/${trailer.key}`,
-      );
-      console.log(videoData);
-      let videoUrl = this.#findFittableQualityMp4Trailer(
-        videoData?.data?.video_without_audio,
-      );
-      if (!videoUrl) {
-        videoUrl = this.#findFittableQualityMp4Trailer(
-          videoData?.data?.video_with_audio,
-        );
+  async getMediaImages(mediaType, mediaID) {
+    const imageObjArray = await this.#makeRequest(
+      `/${mediaType}/${mediaID}/images`,
+      {
+        include_image_language: null,
       }
-
-      if (!videoUrl) {
-        throw new Error("Trailer not found");
-      }
-      return videoUrl;
-    } else {
-      throw new Error("Trailer not found");
-    }
+    );
+    return imageObjArray.backdrops;
   }
 
+  //
+  // Youtube trailers (direct links to videos) [it needs to be rewrotten to own backend in future or just use youtube <iframe>]
+  //
   /**
-   * Finds a fitting quality MP4 trailer from the provided videos.
-   *
-   * @param {Array<Object>} videos - An array of video objects.
-   * @returns {string|null} - The URL of the fitting quality MP4 trailer, or null if no suitable trailer is found.
-   */
-  #findFittableQualityMp4Trailer(videos) {
-    const maxQuality = 480; // Max default q-ty, may change later
+  //  * Retrieves the URL of a YouTube video from its ID.
+  //  *
+  //  * @param {string} youtubeVideoURL - The URL of the YouTube video.
+  //  * @returns {Promise<object>} - A promise that resolves to the video details.
+  //  * @throws {Error} - If an error occurs during the request.
+  //  */
+  // async #getVideoUrl(youtubeVideoURL) {
+  //   const options = {
+  //     method: "GET",
+  //     url: import.meta.env.VITE_X_RAPIDAPI_URL,
+  //     params: {
+  //       url: youtubeVideoURL,
+  //     },
+  //     headers: {
+  //       "x-rapidapi-key": import.meta.env.VITE_X_RAPIDAPI_KEY,
+  //       "x-rapidapi-host": import.meta.env.VITE_X_RAPIDAPI_HOST,
+  //     },
+  //   };
 
-    const mp4VideoWithoutAudio = videos
-      .filter((video) => video.mimeType.includes("video/mp4"))
-      .filter((video) => {
-        const quality = parseInt(video.quality, 10);
-        return quality <= maxQuality;
-      })
-      .sort((trailer1, trailer2) => {
-        const resolution1 = parseInt(trailer1.quality, 10);
-        const resolution2 = parseInt(trailer2.quality, 10);
-        return resolution2 - resolution1;
-      });
+  //   try {
+  //     const response = await axios.request(options);
+  //     return response.data;
+  //   } catch (error) {
+  //     console.error(error);
+  //     throw error;
+  //   }
+  // }
 
-    if (mp4VideoWithoutAudio.length === 0) {
-      return null;
-    }
+  // /**
+  //  * Retrieves the URL of a YouTube video from its ID.
+  //  *
+  //  * @param {string} mediaType - The type of media to retrieve details for.
+  //  * @param {number} mediaID - The ID of the media item to retrieve details for.
+  //  * @param {object} [params] - Additional parameters for the request.
+  //  * @param {string} [params.language] - The language of the requested details.
+  //  * @returns {Promise<object>} - A promise that resolves to the full details of the media item.
+  //  * @throws {Error} - If an error occurs during the request.
+  //  */
+  // async getTrailer(mediaType, mediaID, params = {}) {
+  //   const trailerParams = { ...this.#trailerParams, ...params };
+  //   const response = await this.#makeRequest(
+  //     `/${mediaType}/${mediaID}/videos`,
+  //     trailerParams,
+  //   );
+  //   const videos = response.results;
 
-    return mp4VideoWithoutAudio[0].url;
-  }
+  //   const trailer = videos.find(
+  //     (video) => video?.type === "Trailer" && video?.site === "YouTube",
+  //   );
+  //   if (trailer) {
+  //     // return `https://www.youtube.com/watch?v=${trailer.key}`  for iframe;
+  //     const videoData = await this.#getVideoUrl(
+  //       `https://youtu.be/${trailer.key}`,
+  //     );
+  //     console.log(videoData);
+  //     let videoUrl = this.#findFittableQualityMp4Trailer(
+  //       videoData?.data?.video_without_audio,
+  //     );
+  //     if (!videoUrl) {
+  //       videoUrl = this.#findFittableQualityMp4Trailer(
+  //         videoData?.data?.video_with_audio,
+  //       );
+  //     }
 
-  /**
-   * Retrieves the trending media items for a specified time window.
-   *
-   * @param {string} [timeWindow="day"] - The time window for the trending data. Can be "day" or "week". Defaults to "day".
-   * @param {object} [params] - Additional parameters for the request.
-   * @param {string} [params.language] - The language of the requested trending data.
-   * @returns {Promise<object>} - A promise that resolves to the trending data.
-   * @throws {Error} - If an error occurs during the request.
-   */
+  //     if (!videoUrl) {
+  //       throw new Error("Trailer not found");
+  //     }
+  //     return videoUrl;
+  //   } else {
+  //     throw new Error("Trailer not found");
+  //   }
+  // }
+
+  // /**
+  //  * Finds a fitting quality MP4 trailer from the provided videos.
+  //  *
+  //  * @param {Array<Object>} videos - An array of video objects.
+  //  * @returns {string|null} - The URL of the fitting quality MP4 trailer, or null if no suitable trailer is found.
+  //  */
+  // #findFittableQualityMp4Trailer(videos) {
+  //   const maxQuality = 480; // Max default q-ty, may change later
+
+  //   const mp4VideoWithoutAudio = videos
+  //     .filter((video) => video.mimeType.includes("video/mp4"))
+  //     .filter((video) => {
+  //       const quality = parseInt(video.quality, 10);
+  //       return quality <= maxQuality;
+  //     })
+  //     .sort((trailer1, trailer2) => {
+  //       const resolution1 = parseInt(trailer1.quality, 10);
+  //       const resolution2 = parseInt(trailer2.quality, 10);
+  //       return resolution2 - resolution1;
+  //     });
+
+  //   if (mp4VideoWithoutAudio.length === 0) {
+  //     return null;
+  //   }
+
+  //   return mp4VideoWithoutAudio[0].url;
+  // }
+
+  // /**
+  //  * Retrieves the trending media items for a specified time window.
+  //  *
+  //  * @param {string} [timeWindow="day"] - The time window for the trending data. Can be "day" or "week". Defaults to "day".
+  //  * @param {object} [params] - Additional parameters for the request.
+  //  * @param {string} [params.language] - The language of the requested trending data.
+  //  * @returns {Promise<object>} - A promise that resolves to the trending data.
+  //  * @throws {Error} - If an error occurs during the request.
+  //  */
   async getTrending(timeWindow = "day", params = {}) {
     const trendingParams = { ...this.#trendingParams, ...params };
-    return await this.#makeRequest(
+    const trandingArray = await this.#makeRequest(
       `/trending/all/${timeWindow}`,
-      trendingParams,
+      trendingParams
     );
+    const tranding = trandingArray.results.filter(
+      (media) => media.media_type === "movie" || media.media_type === "tv"
+    );
+    return tranding;
   }
 }
 

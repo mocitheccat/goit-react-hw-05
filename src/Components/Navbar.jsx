@@ -53,7 +53,7 @@ const Navbar = () => {
         </div>
         <div
           onClick={toggleMobileMenu}
-          className="lg:hidden flex flex-row items-center gap-2 ml-8 cursor-pointer relative"
+          className="lg:hidden flex flex-row items-start gap-2 ml-10 cursor-pointer relative"
         >
           <p className="text-white text-sm">Browse</p>
           <BsChevronDown className="text-white transition" />
@@ -73,7 +73,7 @@ const Navbar = () => {
             <BsChevronDown
               className={`w-4 text-white fill-white transition ${showAccountMenu ? "rotate-180" : "rotate-0"}`}
             />
-            <AccountMenu visible={showAccountMenu} />
+            <AccountMenu visible={showAccountMenu} defaultBlueImage={defaultBlueImage} />
           </div>
         </div>
       </div>

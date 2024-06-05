@@ -1,7 +1,7 @@
 import Auth from "../utils/auth.js";
-import defaultBlueImage from "../../public/images/default-blue.png";
+// import defaultBlueImage from "../../public/images/default-blue.png";
 
-const AccountMenu = ({ visible }) => {
+const AccountMenu = ({ visible, defaultBlueImage }) => {
   const username = Auth.readUser();
 
   if (!visible) {
@@ -14,7 +14,7 @@ const AccountMenu = ({ visible }) => {
   };
 
   return (
-    <div className="bg-black w-56 absolute top-14 right-0 py-5 flex-col border-2 border-gray-800 flex">
+    <div className="bg-black w-40 absolute top-14 right-0 py-5 flex-col border-2 rounded border-gray-800 flex">
       <div className="flex flex-col gap-3">
         <div className="px-3 group/item flex flex-row gap-3 items-center w-full">
           <img className="w-8 rounded-md" src={defaultBlueImage} alt="" />

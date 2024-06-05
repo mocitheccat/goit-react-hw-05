@@ -1,9 +1,9 @@
-import TrailerPlayer from "./TrailerPlayer";
+// import TrailerPlayer from "./TrailerPlayer";
 
-const MoviePage = ({ mediaType, mediaID }) => {
+const MoviePage = () => {
   return (
     <div>
-      <TrailerPlayer mediaType={mediaType} mediaID={mediaID} />
+      {/* <TrailerPlayer mediaType={mediaType} mediaID={mediaID} /> */}
     </div>
   );
 };
