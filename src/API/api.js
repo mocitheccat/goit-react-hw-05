@@ -85,7 +85,7 @@ class TMDB {
     const fullMediaDataParams = { ...this.#fullMediaData, ...params };
     return await this.#makeRequest(
       `/${mediaType}/${mediaID}`,
-      fullMediaDataParams
+      fullMediaDataParams,
     );
   }
 
@@ -94,7 +94,7 @@ class TMDB {
       `/${mediaType}/${mediaID}/images`,
       {
         include_image_language: null,
-      }
+      },
     );
     return imageObjArray.backdrops;
   }
@@ -215,14 +215,13 @@ class TMDB {
   //  */
   async getTrending(timeWindow = "day", params = {}) {
     const trendingParams = { ...this.#trendingParams, ...params };
-    const trandingArray = await this.#makeRequest(
+    const trendingArray = await this.#makeRequest(
       `/trending/all/${timeWindow}`,
-      trendingParams
+      trendingParams,
     );
-    const tranding = trandingArray.results.filter(
-      (media) => media.media_type === "movie" || media.media_type === "tv"
+    return trendingArray.results.filter(
+      (media) => media.media_type === "movie" || media.media_type === "tv",
     );
-    return tranding;
   }
 }
 

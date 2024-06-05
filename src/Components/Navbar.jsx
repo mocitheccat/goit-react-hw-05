@@ -23,7 +23,7 @@ const Navbar = () => {
 
   useEffect(() => {
     const handleScroll = () => {
-      console.log(window.scrollY);
+      // console.log(window.scrollY);
       if (window.scrollY >= TOP_OFFSET) {
         setShowBackground(true);
       } else {
@@ -53,10 +53,12 @@ const Navbar = () => {
         </div>
         <div
           onClick={toggleMobileMenu}
-          className="lg:hidden flex flex-row items-start gap-2 ml-10 cursor-pointer relative"
+          className="lg:hidden flex flex-row items-start gap-2 ml-5 cursor-pointer relative"
         >
           <p className="text-white text-sm">Browse</p>
-          <BsChevronDown className="text-white transition" />
+          <BsChevronDown
+            className={`text-white transition ${showMobileMenu ? "rotate-180" : "rotate-0"}`}
+          />
           <MobileMenu visible={showMobileMenu} />
         </div>
         <div className="flex flex-row ml-auto gap-7 items-center">
@@ -73,7 +75,10 @@ const Navbar = () => {
             <BsChevronDown
               className={`w-4 text-white fill-white transition ${showAccountMenu ? "rotate-180" : "rotate-0"}`}
             />
-            <AccountMenu visible={showAccountMenu} defaultBlueImage={defaultBlueImage} />
+            <AccountMenu
+              visible={showAccountMenu}
+              defaultBlueImage={defaultBlueImage}
+            />
           </div>
         </div>
       </div>

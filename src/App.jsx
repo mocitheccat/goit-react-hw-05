@@ -1,34 +1,26 @@
 import { Route, Routes } from "react-router-dom";
 import Landing from "./Components/Landing";
-import HomePage from "./Components/HomePage.jsx";
-import ProtectedRoute from "./Components/Protected/ProtectedRoute.jsx";
-import ProtectedLogin from "./Components/Protected/ProtectedLogin.jsx";
+import HomePage from "./Components/HomePage";
+import ProtectedRoute from "./Components/Protected/ProtectedRoute";
+import { TMDBProvider } from "./Context/ApiContext";
 
 function App() {
   return (
-    <Routes>
-      <Route
-        path="/login"
-        element={
-          <ProtectedLogin>
-            <Landing />
-          </ProtectedLogin>
-        }
-      />
-      <Route
-        path="/"
-        element={
-          <ProtectedRoute>
-            <HomePage />
-          </ProtectedRoute>
-        }
-      />
-      {/* <Route path="/search" element={<Search />} />
-        <Route path="/movie/:id" element={<Movie />} />
-        <Route path="/tv/:id" element={<TV />} />
-        <Route path="/person/:id" element={<Person />} />
-        <Route path="*" element={<NotFound />} /> */}
-    </Routes>
+    <TMDBProvider>
+      <Routes>
+        <Route element={<ProtectedRoute requiresAuth={false} />}>
+          <Route path="/login" element={<Landing />} />
+        </Route>
+        <Route element={<ProtectedRoute requiresAuth={true} />}>
+          <Route path="/" element={<HomePage />} />
+        </Route>
+        {/* <Route path="/search" element={<Search />} />
+          <Route path="/movie/:id" element={<Movie />} />
+          <Route path="/tv/:id" element={<TV />} />
+          <Route path="/person/:id" element={<Person />} />
+          <Route path="*" element={<NotFound />} /> */}
+      </Routes>
+    </TMDBProvider>
   );
 }
 
