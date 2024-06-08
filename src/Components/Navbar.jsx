@@ -5,6 +5,7 @@ import { useCallback, useEffect, useState } from "react";
 import AccountMenu from "./AccountMenu.jsx";
 import defaultBlueImage from "../../public/images/default-blue.png";
 import logo from "../../public/images/logo.png";
+import { Link, useNavigate } from "react-router-dom";
 
 const TOP_OFFSET = 66;
 
@@ -12,18 +13,34 @@ const Navbar = () => {
   const [showAccountMenu, setShowAccountMenu] = useState(false);
   const [showMobileMenu, setShowMobileMenu] = useState(false);
   const [showBackground, setShowBackground] = useState(false);
+  const [isMobile, setIsMobile] = useState(window.innerWidth <= 1023);
+  const [searchQuery, setSearchQuery] = useState("");
+  const navigate = useNavigate();
 
-  const toggleMobileMenu = useCallback(() => {
-    setShowMobileMenu((current) => !current);
+  const handleResize = useCallback(() => {
+    setIsMobile(window.innerWidth <= 1023);
   }, []);
 
   const toggleAccountMenu = useCallback(() => {
     setShowAccountMenu((current) => !current);
   }, []);
 
+  const handleChange = (value) => {
+    setSearchQuery(value);
+    console.log(value);
+  };
+
+  const handleSearch = (e) => {
+    e.preventDefault();
+    if (searchQuery.trim() !== "") {
+      console.log("Search query submitted:", searchQuery);
+
+      navigate(`/search?q=${searchQuery}`);
+    }
+  };
+
   useEffect(() => {
     const handleScroll = () => {
-      // console.log(window.scrollY);
       if (window.scrollY >= TOP_OFFSET) {
         setShowBackground(true);
       } else {
@@ -32,39 +49,86 @@ const Navbar = () => {
     };
 
     window.addEventListener("scroll", handleScroll);
+    window.addEventListener("resize", handleResize);
 
     return () => {
       window.removeEventListener("scroll", handleScroll);
+      window.removeEventListener("resize", handleResize);
     };
-  }, []);
+  }, [handleResize]);
+
+  useEffect(() => {
+    setShowMobileMenu(isMobile);
+  }, [isMobile]);
 
   return (
     <nav className="w-full fixed z-40">
       <div
-        className={`px-4 md:px-16 py-6 flex flex-row items-center transition duration-500 ${showBackground ? "bg-zinc-900 bg-opacity-90" : ""}`}
+        className={`px-4 md:px-16 py-6 flex flex-row items-center transition duration-500 leading-9 ${
+          showBackground ? "bg-zinc-900 bg-opacity-90" : ""
+        }`}
       >
-        <img className="h-4 lg-h-7" src={logo} alt="logo" />
+        <Link to="/">
+          <img className="h-4 lg:h-7" src={logo} alt="logo" />
+        </Link>
         <div className="flex-row ml-8 gap-7 hidden lg:flex">
           <NavbarItem label="Home" />
           <NavbarItem label="Series" />
           <NavbarItem label="Movies" />
-          <NavbarItem label="New & Popular" />
+          <NavbarItem label="Popular" />
           <NavbarItem label="My list" />
         </div>
-        <div
-          onClick={toggleMobileMenu}
-          className="lg:hidden flex flex-row items-start gap-2 ml-5 cursor-pointer relative"
-        >
-          <p className="text-white text-sm">Browse</p>
-          <BsChevronDown
-            className={`text-white transition ${showMobileMenu ? "rotate-180" : "rotate-0"}`}
-          />
-          <MobileMenu visible={showMobileMenu} />
-        </div>
-        <div className="flex flex-row ml-auto gap-7 items-center">
-          <div className="text-gray-200 hover:text-gray-300 cursor-pointer">
-            <BsSearch />
+        <div className="flex flex-row ml-auto gap-7 md:gap-3 items-center justify-center">
+          <div className="flex justify-center items-center">
+            <form
+              action=""
+              className="relative text-white"
+              onSubmit={(e) => handleSearch(e)}
+            >
+              <input
+                type="text"
+                className={`
+                text-transparent
+                  peer
+                  cursor-pointer
+                  relative
+                  z-10
+                  w-11
+                  rounded-lg
+                  border
+                  border-transparent
+                  bg-transparent
+                  outline-none
+                  leading-4
+                  transition-all
+                  duration-350
+                  focus:text-white
+                  ${!isMobile && "focus:w-[20vw]"}
+                  focus:w-[40vw]
+                  focus:py-2
+                  focus:max-h-[74px]
+                  focus:cursor-text
+                  focus:border-red-600
+                  focus:pl-14
+                  focus:pr-4`}
+                onChange={(e) => handleChange(e.target.value)}
+              />
+              <BsSearch
+                className="
+                  absolute
+                  inset-y-0
+                  my-auto
+                  w-12
+                  border-r
+                  border-transparent
+                  stroke-gray-500
+                  px-3.5
+                  peer-focus:border-red-600
+                  peer-focus:stroke-red-900"
+              />
+            </form>
           </div>
+
           <div
             onClick={toggleAccountMenu}
             className="flex flex-row items-center gap-2 cursor-pointer relative"
@@ -73,7 +137,9 @@ const Navbar = () => {
               <img src={defaultBlueImage} alt="" />
             </div>
             <BsChevronDown
-              className={`w-4 text-white fill-white transition ${showAccountMenu ? "rotate-180" : "rotate-0"}`}
+              className={`w-4 text-white fill-white transition ${
+                showAccountMenu ? "rotate-180" : "rotate-0"
+              }`}
             />
             <AccountMenu
               visible={showAccountMenu}
@@ -82,6 +148,7 @@ const Navbar = () => {
           </div>
         </div>
       </div>
+      <MobileMenu visible={showMobileMenu} />
     </nav>
   );
 };

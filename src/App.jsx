@@ -1,8 +1,9 @@
 import { Route, Routes } from "react-router-dom";
-import Landing from "./Components/Landing";
-import HomePage from "./Components/HomePage";
-import ProtectedRoute from "./Components/Protected/ProtectedRoute";
+import Landing from "./Routes/Landing.jsx";
+import HomePage from "./Routes/HomePage.jsx";
+import ProtectedRoute from "./Routes/Protected/ProtectedRoute";
 import { TMDBProvider } from "./Context/ApiContext";
+import Search from "./Routes/Search.jsx";
 
 function App() {
   return (
@@ -14,11 +15,9 @@ function App() {
         <Route element={<ProtectedRoute requiresAuth={true} />}>
           <Route path="/" element={<HomePage />} />
         </Route>
-        {/* <Route path="/search" element={<Search />} />
-          <Route path="/movie/:id" element={<Movie />} />
-          <Route path="/tv/:id" element={<TV />} />
-          <Route path="/person/:id" element={<Person />} />
-          <Route path="*" element={<NotFound />} /> */}
+        <Route element={<ProtectedRoute requiresAuth={true} />}>
+          <Route path="/search" element={<Search />} />
+        </Route>
       </Routes>
     </TMDBProvider>
   );

@@ -204,24 +204,27 @@ class TMDB {
   //   return mp4VideoWithoutAudio[0].url;
   // }
 
-  // /**
-  //  * Retrieves the trending media items for a specified time window.
-  //  *
-  //  * @param {string} [timeWindow="day"] - The time window for the trending data. Can be "day" or "week". Defaults to "day".
-  //  * @param {object} [params] - Additional parameters for the request.
-  //  * @param {string} [params.language] - The language of the requested trending data.
-  //  * @returns {Promise<object>} - A promise that resolves to the trending data.
-  //  * @throws {Error} - If an error occurs during the request.
-  //  */
-  async getTrending(timeWindow = "day", params = {}) {
+  /**
+   * Retrieves the trending media items for a specified time window.
+   *
+   * @param {string} [timeWindow="day"] - The time window for the trending data. Can be "day" or "week". Defaults to "day".
+   * @param {string} [mediaType="all"] - Type of media to fetch. Default to "all".
+   * @param {object} [params] - Additional parameters for the request.
+   * @param {string} [params.language] - The language of the requested trending data.
+   * @returns {Promise<object>} - A promise that resolves to the trending data.
+   * @throws {Error} - If an error occurs during the request.
+   */
+  async getTrending(timeWindow = "day", mediaType = "all", params = {}) {
     const trendingParams = { ...this.#trendingParams, ...params };
     const trendingArray = await this.#makeRequest(
-      `/trending/all/${timeWindow}`,
+      `/trending/${mediaType}/${timeWindow}`,
       trendingParams,
     );
-    return trendingArray.results.filter(
-      (media) => media.media_type === "movie" || media.media_type === "tv",
-    );
+    return mediaType === "all"
+      ? trendingArray.results.filter(
+          (media) => media.media_type === "movie" || media.media_type === "tv",
+        )
+      : trendingArray.results;
   }
 }
 

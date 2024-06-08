@@ -26,9 +26,9 @@ const AccountMenu = ({ visible, defaultBlueImage }) => {
       <hr className="bg-gray-600 border-0 h-px my-4" />
       <div
         onClick={handleLogout}
-        className="px-3 text-center text-white text-sm hover:underline"
+        className="px-3 text-center text-red-400 text-sm  hover:text-red-500"
       >
-        Sign out of Mooovix
+        Sign out :(
       </div>
     </div>
   );

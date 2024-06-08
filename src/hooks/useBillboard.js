@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import {
-  createFullImgUrl,
+  createFullImgUrlForBillBoard,
   createRandomMediaBackdropImage,
 } from "../utils/helpers";
 
@@ -18,17 +18,17 @@ const useBillboard = (tmdb, imageWidth = 0) => {
 
         const mediaImages = await tmdb.getMediaImages(
           randomMediaDataShort.media_type,
-          randomMediaDataShort.id
+          randomMediaDataShort.id,
         );
 
         const randomBackdropImgForMedia = createRandomMediaBackdropImage(
-          createFullImgUrl(imageWidth, mediaImages)
+          createFullImgUrlForBillBoard(imageWidth, mediaImages),
         );
 
         setRandomMediaDataShort(randomMediaDataShort);
-        console.log(randomMediaDataShort);
+        // console.log(randomMediaDataShort);
         setRandomBackdropImgForMedia(randomBackdropImgForMedia);
-        console.log(randomBackdropImgForMedia);
+        // console.log(randomBackdropImgForMedia);
       } catch (error) {
         console.error("Error fetching random movie data:", error);
       }
