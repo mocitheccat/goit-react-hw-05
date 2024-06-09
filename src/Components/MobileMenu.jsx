@@ -10,36 +10,28 @@ const MobileMenu = ({ visible }) => {
   }
 
   return (
-    <div className="fixed bottom-0 left-0 right-0 bg-zinc-900 border-t-2 border-gray-800 flex justify-around items-center py-2 text-white h-[80px]">
+    <div className="fixed bottom-0 left-0 right-0 bg-zinc-900 border-t-2 border-gray-800 flex justify-around items-center py-2 text-white h-[60px]">
       <NavLink
         to="/"
-        className={({ isActive }) =>
-          isActive ? "text-red-500" : "text-white"
-        }
+        className={({ isActive }) => (isActive ? "text-red-500" : "text-white")}
       >
         <LiaHomeSolid className="h-10 w-10" />
       </NavLink>
       <NavLink
         to="/movies"
-        className={({ isActive }) =>
-          isActive ? "text-red-500" : "text-white"
-        }
+        className={({ isActive }) => (isActive ? "text-red-500" : "text-white")}
       >
         <TbMovie className="h-10 w-10" />
       </NavLink>
       <NavLink
         to="/series"
-        className={({ isActive }) =>
-          isActive ? "text-red-500" : "text-white"
-        }
+        className={({ isActive }) => (isActive ? "text-red-500" : "text-white")}
       >
         <PiTelevisionSimpleBold className="h-10 w-10" />
       </NavLink>
       <NavLink
         to="/my-list"
-        className={({ isActive }) =>
-          isActive ? "text-red-500" : "text-white"
-        }
+        className={({ isActive }) => (isActive ? "text-red-500" : "text-white")}
       >
         <FaRegBookmark className="h-8 w-10" />
       </NavLink>

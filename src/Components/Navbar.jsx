@@ -69,7 +69,7 @@ const Navbar = () => {
         }`}
       >
         <Link to="/">
-          <img className="h-4 lg:h-7" src={logo} alt="logo" />
+          <img className="h-5 lg:h-7" src={logo} alt="logo" />
         </Link>
         <div className="flex-row ml-8 gap-7 hidden lg:flex">
           <NavbarItem label="Home" />
@@ -78,7 +78,7 @@ const Navbar = () => {
           <NavbarItem label="Popular" />
           <NavbarItem label="My list" />
         </div>
-        <div className="flex flex-row ml-auto gap-7 md:gap-3 items-center justify-center">
+        <div className="flex flex-row ml-auto gap-3 items-center justify-center">
           <div className="flex justify-center items-center">
             <form
               action=""
@@ -89,27 +89,25 @@ const Navbar = () => {
                 type="text"
                 className={`
                 text-transparent
-                  peer
                   cursor-pointer
                   relative
                   z-10
                   w-11
+                  leading-4
                   rounded-lg
                   border
                   border-transparent
                   bg-transparent
                   outline-none
-                  leading-4
                   transition-all
                   duration-350
                   focus:text-white
-                  ${!isMobile && "focus:w-[20vw]"}
-                  focus:w-[40vw]
+                  ${!isMobile ? "focus:w-[20vw]" : "focus:w-[40vw]"}
                   focus:py-2
-                  focus:max-h-[74px]
+                  focus:max-h-[36px]
                   focus:cursor-text
                   focus:border-red-600
-                  focus:pl-14
+                  focus:pl-10
                   focus:pr-4`}
                 onChange={(e) => handleChange(e.target.value)}
               />
@@ -133,7 +131,7 @@ const Navbar = () => {
             onClick={toggleAccountMenu}
             className="flex flex-row items-center gap-2 cursor-pointer relative"
           >
-            <div className="w-6 h-6 lg:w-10 lg:h-10 rounded-md overflow-hidden">
+            <div className="w-9 h-9 lg:w-10 lg:h-10 rounded-md overflow-hidden">
               <img src={defaultBlueImage} alt="" />
             </div>
             <BsChevronDown

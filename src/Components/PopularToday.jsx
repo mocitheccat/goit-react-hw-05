@@ -19,7 +19,7 @@ const PopularToday = ({ data }) => {
             Show More
           </Link>
         </div>
-        <div className="grid grid-cols-4 gap-2">
+        <div className="grid lg:grid-cols-4 lg:gap-3 grid-cols-2 gap-4">
           {data.trendingMovies?.map((media) => (
             <MediaItem key={media.id} mediaData={media} />
           ))}
@@ -37,7 +37,7 @@ const PopularToday = ({ data }) => {
             Show More
           </Link>
         </div>
-        <div className="grid grid-cols-4 gap-2">
+        <div className="grid lg:grid-cols-4 grid-cols-2 lg:gap-3 gap-4">
           {data.trendingSeries?.map((media) => (
             <MediaItem key={media.id} mediaData={media} />
           ))}
