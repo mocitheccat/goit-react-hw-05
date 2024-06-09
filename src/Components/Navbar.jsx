@@ -7,7 +7,7 @@ import defaultBlueImage from "../../public/images/default-blue.png";
 import logo from "../../public/images/logo.png";
 import { Link, useNavigate } from "react-router-dom";
 
-const TOP_OFFSET = 66;
+const TOP_OFFSET = 30;
 
 const Navbar = () => {
   const [showAccountMenu, setShowAccountMenu] = useState(false);
@@ -102,7 +102,7 @@ const Navbar = () => {
                   transition-all
                   duration-350
                   focus:text-white
-                  ${!isMobile ? "focus:w-[20vw]" : "focus:w-[40vw]"}
+                  ${!isMobile ? "focus:w-[20vw]" : "focus:w-[33vw]"}
                   focus:py-2
                   focus:max-h-[36px]
                   focus:cursor-text
