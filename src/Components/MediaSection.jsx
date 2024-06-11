@@ -1,10 +1,10 @@
-import Slider from "react-slick";
 import MediaItem from "./MediaItem.jsx";
 import { Link } from "react-router-dom";
-import "slick-carousel/slick/slick.css";
-import "slick-carousel/slick/slick-theme.css";
+import { useRef } from "react";
 
-const MediaSection = ({ title, link, mediaData, settings }) => {
+const MediaSection = ({ title, link, mediaData }) => {
+  const scrollContainerRef = useRef(null);
+
   return (
     <div>
       <div className="flex justify-between items-center text-white mb-6">
@@ -16,11 +16,23 @@ const MediaSection = ({ title, link, mediaData, settings }) => {
           Show More
         </Link>
       </div>
-      <Slider {...settings}>
-        {mediaData?.map((media) => (
-          <MediaItem key={media.id} mediaData={media} />
-        ))}
-      </Slider>
+      <div className="relative">
+        <div
+          ref={scrollContainerRef}
+          className="flex overflow-x-auto scrollbar-custom space-x-4 px-6"
+          style={{ scrollSnapType: "x mandatory" }}
+        >
+          {mediaData?.map((media) => (
+            <div
+              key={media.id}
+              className="flex-shrink-0 w-[35vw] md:w-[25vw] h-[52vw] md:h-[39vw] lg:h-[13.8vw]"
+              style={{ scrollSnapAlign: "start" }}
+            >
+              <MediaItem mediaData={media} />
+            </div>
+          ))}
+        </div>
+      </div>
     </div>
   );
 };

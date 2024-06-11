@@ -75,7 +75,6 @@ const Navbar = () => {
           <NavbarItem label="Home" />
           <NavbarItem label="Series" />
           <NavbarItem label="Movies" />
-          <NavbarItem label="Popular" />
           <NavbarItem label="My list" />
         </div>
         <div className="flex flex-row ml-auto gap-3 items-center justify-center">

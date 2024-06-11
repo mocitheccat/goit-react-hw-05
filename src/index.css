@@ -31,3 +31,24 @@ body {
 .slick-dots li button:before {
     content: "";
 }
+
+
+/* Custom scrollbar styles */
+.scrollbar-custom::-webkit-scrollbar {
+    height: 8px;
+}
+
+.scrollbar-custom::-webkit-scrollbar-thumb {
+    background-color: #ef4444; /* Red color */
+    border-radius: 4px;
+}
+
+.scrollbar-custom::-webkit-scrollbar-track {
+    background-color: transparent;
+}
+
+/* For Firefox */
+.scrollbar-custom {
+    scrollbar-color: #ef4444 transparent;
+    scrollbar-width: thin;
+}
