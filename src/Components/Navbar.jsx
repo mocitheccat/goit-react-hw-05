@@ -1,9 +1,7 @@
 import NavbarItem from "./NavbarItem.jsx";
-import { BsChevronDown } from "react-icons/bs";
 import { RiSearch2Line } from "react-icons/ri";
 import MobileMenu from "./MobileMenu.jsx";
 import { useCallback, useEffect, useState } from "react";
-import AccountMenu from "./AccountMenu.jsx";
 import defaultBlueImage from "../../public/images/default-blue.png";
 import logo from "../../public/images/logo.png";
 import { Link, useNavigate } from "react-router-dom";
@@ -11,7 +9,6 @@ import { Link, useNavigate } from "react-router-dom";
 const TOP_OFFSET = 30;
 
 const Navbar = () => {
-  const [showAccountMenu, setShowAccountMenu] = useState(false);
   const [showMobileMenu, setShowMobileMenu] = useState(false);
   const [showBackground, setShowBackground] = useState(false);
   const [isMobile, setIsMobile] = useState(window.innerWidth <= 1023);
@@ -22,10 +19,6 @@ const Navbar = () => {
     setIsMobile(window.innerWidth <= 1023);
   }, []);
 
-  const toggleAccountMenu = useCallback(() => {
-    setShowAccountMenu((current) => !current);
-  }, []);
-
   const handleChange = (value) => {
     setSearchQuery(value);
     console.log(value);
@@ -34,8 +27,7 @@ const Navbar = () => {
   const handleSearch = (e) => {
     e.preventDefault();
     if (searchQuery.trim() !== "") {
-      console.log("Search query submitted:", searchQuery);
-
+      console.log("SearchPage query submitted:", searchQuery);
       navigate(`/search?q=${searchQuery}`);
     }
   };
@@ -72,22 +64,25 @@ const Navbar = () => {
         <Link to="/">
           <img className="h-5 lg:h-7" src={logo} alt="logo" />
         </Link>
-        <div className="flex-row ml-8 gap-7 hidden lg:flex">
-          <NavbarItem label="Home" />
-          <NavbarItem label="Series" />
-          <NavbarItem label="Movies" />
-          <NavbarItem label="My list" />
-        </div>
-        <div className="flex flex-row ml-auto gap-3 items-center justify-center">
-          <div className="flex justify-center items-center">
-            <form
-              action=""
-              className="relative text-white"
-              onSubmit={(e) => handleSearch(e)}
-            >
-              <input
-                type="text"
-                className={`
+        {!isMobile && (
+          <div className="flex-row ml-8 gap-7 hidden lg:flex">
+            <NavbarItem label="Home" />
+            <NavbarItem label="Series" />
+            <NavbarItem label="MoviesPage" />
+            <NavbarItem label="My list" />
+          </div>
+        )}
+        {!isMobile && (
+          <div className="flex flex-row ml-auto gap-3 items-center justify-center">
+            <div className="flex justify-center items-center">
+              <form
+                action=""
+                className="relative text-white"
+                onSubmit={(e) => handleSearch(e)}
+              >
+                <input
+                  type="text"
+                  className={`
                 text-transparent
                   cursor-pointer
                   relative
@@ -102,17 +97,17 @@ const Navbar = () => {
                   transition-all
                   duration-350
                   focus:text-white
-                  ${!isMobile ? "focus:w-[20vw]" : "focus:w-[33vw]"}
+                  focus:w-[20vw]
                   focus:py-2
                   focus:max-h-[36px]
                   focus:cursor-text
                   focus:border-red-600
                   focus:pl-10
                   focus:pr-4`}
-                onChange={(e) => handleChange(e.target.value)}
-              />
-              <RiSearch2Line
-                className="
+                  onChange={(e) => handleChange(e.target.value)}
+                />
+                <RiSearch2Line
+                  className="
                   absolute
                   inset-y-0
                   my-auto
@@ -123,28 +118,20 @@ const Navbar = () => {
                   px-3.5
                   peer-focus:border-red-600
                   peer-focus:stroke-red-900"
-              />
-            </form>
-          </div>
-
-          <div
-            onClick={toggleAccountMenu}
-            className="flex flex-row items-center gap-2 cursor-pointer relative"
-          >
-            <div className="w-9 h-9 lg:w-10 lg:h-10 rounded-md overflow-hidden">
-              <img src={defaultBlueImage} alt="" />
+                />
+              </form>
             </div>
-            <BsChevronDown
-              className={`w-4 text-white fill-white transition ${
-                showAccountMenu ? "rotate-180" : "rotate-0"
-              }`}
-            />
-            <AccountMenu
-              visible={showAccountMenu}
-              defaultBlueImage={defaultBlueImage}
-            />
+            <div className="flex flex-row items-center gap-2 cursor-pointer relative">
+              <div className="w-9 h-9 lg:w-10 lg:h-10 rounded-md overflow-hidden hover:border-2 hover:border-gray-200">
+                <img
+                  className="w-9 h-9 lg:w-10 lg:h-10"
+                  src={defaultBlueImage}
+                  alt=""
+                />
+              </div>
+            </div>
           </div>
-        </div>
+        )}
       </div>
       <MobileMenu visible={showMobileMenu} />
     </nav>

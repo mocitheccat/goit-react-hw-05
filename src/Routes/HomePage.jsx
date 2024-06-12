@@ -1,5 +1,4 @@
 import Billboard from "../Components/Billboard.jsx";
-import Navbar from "../Components/Navbar.jsx";
 import PopularToday from "../Components/PopularToday.jsx";
 import { useTMDB } from "../hooks/useTMDB.js";
 import { useEffect, useState } from "react";
@@ -16,7 +15,7 @@ const HomePage = () => {
       try {
         const trendingMovies = await tmdb.getTrending("day", "movie");
         const trendingSeries = await tmdb.getTrending("day", "tv");
-        console.log("Movies ==>", trendingMovies);
+        console.log("MoviesPage ==>", trendingMovies);
         console.log("TVs ==>", trendingSeries);
         const trending = {
           trendingMovies,

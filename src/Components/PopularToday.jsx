@@ -8,7 +8,7 @@ const PopularToday = ({ data }) => {
       </p>
 
       <MediaSection
-        title="Popular Movies"
+        title="Popular MoviesPage"
         link="/movies"
         mediaData={data.trendingMovies}
       />

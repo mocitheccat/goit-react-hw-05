@@ -1,6 +1,7 @@
 import MediaItem from "./MediaItem.jsx";
 import { Link } from "react-router-dom";
 import { useRef } from "react";
+import { ThreeDots } from "react-loader-spinner";
 
 const MediaSection = ({ title, link, mediaData }) => {
   const scrollContainerRef = useRef(null);
@@ -18,14 +19,20 @@ const MediaSection = ({ title, link, mediaData }) => {
       </div>
       <div className="relative">
         <div ref={scrollContainerRef} className="scrollbar-custom">
-          {mediaData?.map((media) => (
-            <div
-              key={media.id}
-              className="flex-shrink-0 w-[35vw] md:w-[25vw] h-[52vw] md:h-[39vw] lg:h-[13.8vw] snap-align-none"
-            >
-              <MediaItem mediaData={media} />
+          {mediaData ? (
+            mediaData?.map((media) => (
+              <div
+                key={media.id}
+                className="flex-shrink-0 w-[35vw] md:w-[25vw] h-[52vw] md:h-[39vw] lg:h-[13.8vw] snap-align-none"
+              >
+                <MediaItem mediaData={media} />
+              </div>
+            ))
+          ) : (
+            <div className="absolute inset-0 flex items-center justify-center h-[48vw] md:h-[36vw] lg:h-[12vw]">
+              <ThreeDots color="#FFFFFF" />
             </div>
-          ))}
+          )}
         </div>
       </div>
     </div>

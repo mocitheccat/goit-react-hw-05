@@ -4,7 +4,7 @@ import { useNavigate } from "react-router-dom";
 import Auth from "../utils/auth.js";
 import logo from "../../public/images/logo.png";
 
-const Landing = () => {
+const LoginPage = () => {
   const navigate = useNavigate();
   const [username, setUsername] = useState("");
 
@@ -49,4 +49,4 @@ const Landing = () => {
   );
 };
 
-export default Landing;
+export default LoginPage;
