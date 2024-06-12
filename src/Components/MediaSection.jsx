@@ -17,16 +17,11 @@ const MediaSection = ({ title, link, mediaData }) => {
         </Link>
       </div>
       <div className="relative">
-        <div
-          ref={scrollContainerRef}
-          className="flex overflow-x-auto scrollbar-custom space-x-4 px-6"
-          style={{ scrollSnapType: "x mandatory" }}
-        >
+        <div ref={scrollContainerRef} className="scrollbar-custom">
           {mediaData?.map((media) => (
             <div
               key={media.id}
-              className="flex-shrink-0 w-[35vw] md:w-[25vw] h-[52vw] md:h-[39vw] lg:h-[13.8vw]"
-              style={{ scrollSnapAlign: "start" }}
+              className="flex-shrink-0 w-[35vw] md:w-[25vw] h-[52vw] md:h-[39vw] lg:h-[13.8vw] snap-align-none"
             >
               <MediaItem mediaData={media} />
             </div>

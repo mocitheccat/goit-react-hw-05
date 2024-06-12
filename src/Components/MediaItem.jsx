@@ -3,7 +3,7 @@ import { createFullImgUrl } from "../utils/helpers.js";
 const MediaItem = ({ mediaData }) => {
   const posterUrl = createFullImgUrl(500, mediaData?.poster_path);
   return (
-    <div className="group bg-zinc-900 col-span relative h-[48vw] md:h-[36vw] lg:h-[12vw] m-1">
+    <div className="group bg-zinc-900 col-span relative h-[48vw] md:h-[36vw] lg:h-[12vw] m-1.5">
       <img
         onClick={() => {}}
         src={posterUrl}

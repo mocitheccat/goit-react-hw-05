@@ -7,33 +7,15 @@ body {
     @apply bg-zinc-900 overflow-x-hidden;
 }
 
-.slick-dots {
-    bottom: -30px;
-    /*margin-bottom: 0.5rem;*/
-}
-
-/* Custom styles for slick dots */
-.slick-dots li button {
-    width: 10px;
-    height: 10px;
-    border-radius: 50%;
-    border: 1px solid white;
-    background: transparent;
-    transition: background-color 0.3s, border-color 0.3s;
-}
-
-.slick-dots li.slick-active button {
-    background: red;
-    border-color: red;
-}
-
-
-.slick-dots li button:before {
-    content: "";
-}
-
-
 /* Custom scrollbar styles */
+.scrollbar-custom {
+    display: flex;
+    overflow-x: scroll;
+    scroll-snap-type: none;
+
+}
+
+
 .scrollbar-custom::-webkit-scrollbar {
     height: 8px;
 }

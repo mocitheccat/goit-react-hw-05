@@ -33,11 +33,8 @@ const HomePage = () => {
 
   return (
     <>
-      <Navbar />
       <Billboard />
-      <div className="pb-40">
-        <PopularToday data={trending} />
-      </div>
+      <PopularToday data={trending} />
     </>
   );
 };

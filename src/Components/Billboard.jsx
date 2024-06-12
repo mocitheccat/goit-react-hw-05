@@ -23,21 +23,22 @@ const Billboard = () => {
           <ThreeDots color="#FFFFFF" />
         </div>
       )}
-      <div className="absolute top-[25%] ml-4 md:ml-16">
-        {randomMediaDataShort && (
-          <>
-            <p className="text-white text-2xl md:text-4xl h-full w-[80%] lg:text-6xl font-bold drop-shadow-xl">
-              {randomMediaDataShort.title || randomMediaDataShort.name}
-            </p>
-            <p className="text-white text-[10px] md:text-lg lg:text-xl mt-1 md:mt-3 w-[90%] sm:w-[95%] lg:w-[60%] drop-shadow-xl">
-              {`${randomMediaDataShort.overview.slice(0, 300)}...`}
-            </p>
-            <div className="flex flex-row items-center mt-3 md:mt-4 gap-3">
-              {/*<TrailerPlayer />*/}
-              <Link
-                to={`/${randomMediaDataShort.media_type}/${randomMediaDataShort.id}`}
-                // onClick={handleOpenModal}
-                className="
+      <div className="relative h-[70vw] lg:h-[70vh] overflow-hidden rounded-b-xl flex items-center top-6">
+        <div className="ml-4 md:ml-16">
+          {randomMediaDataShort && (
+            <>
+              <p className="text-white text-2xl md:text-4xl h-full w-[80%] lg:text-6xl font-bold drop-shadow-xl">
+                {randomMediaDataShort.title || randomMediaDataShort.name}
+              </p>
+              <p className="text-white text-[10px] md:text-lg lg:text-xl mt-1 md:mt-3 w-[90%] sm:w-[95%] lg:w-[60%] drop-shadow-xl">
+                {`${randomMediaDataShort.overview.slice(0, 300)}...`}
+              </p>
+              <div className="flex flex-row items-center mt-3 md:mt-4 gap-3">
+                {/*<TrailerPlayer />*/}
+                <Link
+                  to={`/${randomMediaDataShort.media_type}/${randomMediaDataShort.id}`}
+                  // onClick={handleOpenModal}
+                  className="
                     bg-white
                     text-white
                       bg-opacity-30
@@ -53,13 +54,14 @@ const Billboard = () => {
                       hover:bg-opacity-20
                       transition
                     "
-              >
-                <FaCircleInfo className="w-4 mr-1" />
-                More Info
-              </Link>
-            </div>
-          </>
-        )}
+                >
+                  <FaCircleInfo className="w-4 mr-1" />
+                  More Info
+                </Link>
+              </div>
+            </>
+          )}
+        </div>
       </div>
     </div>
   );

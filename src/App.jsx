@@ -11,14 +11,17 @@ function App() {
     <TMDBProvider>
       <Layout>
         <Routes>
+          {/* Public Routes */}
           <Route element={<ProtectedRoute requiresAuth={false} />}>
             <Route path="/login" element={<Landing />} />
           </Route>
+
+          {/* Private Routes with Layout */}
           <Route element={<ProtectedRoute requiresAuth={true} />}>
+            {/*<Route element={<Layout />}>*/}
             <Route path="/" element={<HomePage />} />
-          </Route>
-          <Route element={<ProtectedRoute requiresAuth={true} />}>
             <Route path="/search" element={<Search />} />
+            {/*</Route>*/}
           </Route>
         </Routes>
       </Layout>

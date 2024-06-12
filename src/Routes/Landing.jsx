@@ -17,7 +17,7 @@ const Landing = () => {
   return (
     <div className="bg-hero-pattern bg-no-repeat bg-center bg-cover h-full">
       <div className="bg-black w-screen h-screen bg-opacity-50">
-        <nav className="px-12 py-5">
+        <nav className="px-4 py-5 lg:px-12">
           <img src={logo} className="h-6" alt="Logo" />
         </nav>
         <div className="flex justify-center">
@@ -36,7 +36,7 @@ const Landing = () => {
                 />
               </div>
               <button
-                className="bg-red-600 py-3 text-white rounded-md w-2/3 mt-10 hover:bg-red-700 transition place-self-center"
+                className="bg-red-600 py-3 text-white rounded-md w-full mt-10 hover:bg-red-700 transition place-self-center"
                 type="submit"
               >
                 GO!
