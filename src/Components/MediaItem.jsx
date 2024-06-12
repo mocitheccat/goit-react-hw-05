@@ -3,7 +3,7 @@ import { createFullImgUrl } from "../utils/helpers.js";
 const MediaItem = ({ mediaData }) => {
   const posterUrl = createFullImgUrl(500, mediaData?.poster_path);
   return (
-    <div className="group bg-zinc-900 col-span relative h-[48vw] md:h-[36vw] lg:h-[12vw] m-1.5">
+    <div className="group bg-zinc-900 border-2 border-gray-600 rounded-md col-span relative h-[48vw] md:h-[36vw] lg:h-[12vw] m-1.5">
       <img
         onClick={() => {}}
         src={posterUrl}
@@ -14,15 +14,12 @@ const MediaItem = ({ mediaData }) => {
         object-cover
         transition
         duration
-        shadow-xl
         rounded-md
         group-hover:opacity-90
         sm:group-hover:opacity-0
         delay-300
         w-full
-        h-[48vw]
-        md:h-[36vw]
-        lg:h-[12vw]
+        h-full
       "
       />
       <div

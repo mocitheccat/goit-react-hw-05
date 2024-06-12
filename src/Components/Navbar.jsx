@@ -1,5 +1,6 @@
 import NavbarItem from "./NavbarItem.jsx";
-import { BsChevronDown, BsSearch } from "react-icons/bs";
+import { BsChevronDown } from "react-icons/bs";
+import { RiSearch2Line } from "react-icons/ri";
 import MobileMenu from "./MobileMenu.jsx";
 import { useCallback, useEffect, useState } from "react";
 import AccountMenu from "./AccountMenu.jsx";
@@ -110,7 +111,7 @@ const Navbar = () => {
                   focus:pr-4`}
                 onChange={(e) => handleChange(e.target.value)}
               />
-              <BsSearch
+              <RiSearch2Line
                 className="
                   absolute
                   inset-y-0
