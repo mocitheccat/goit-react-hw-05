@@ -67,16 +67,10 @@ function App() {
               </ProtectedRoute>
             }
           />
+
+          {/* Media Detail Routes (combined for movies and tv shows) */}
           <Route
-            path="/movie/:id"
-            element={
-              <ProtectedRoute>
-                <MediaDetailPage />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/tv/:id"
+            path="/:mediaType/:id"
             element={
               <ProtectedRoute>
                 <MediaDetailPage />
