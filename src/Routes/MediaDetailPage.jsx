@@ -1,6 +1,6 @@
 import { useTMDB } from "../hooks/useTMDB.js";
 import { useEffect, useState } from "react";
-import { useParams, useLocation } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import { ThreeDots } from "react-loader-spinner";
 import {
   RiCalendar2Line,
@@ -9,16 +9,16 @@ import {
   RiTimeLine,
   RiMoneyDollarCircleLine,
 } from "react-icons/ri";
+import { VscDebugContinue } from "react-icons/vsc";
 import { MdOutlineTheaterComedy } from "react-icons/md";
 import { createFullImgUrl } from "../utils/helpers.js";
+import Credits from "../Components/Credits.jsx";
 
 const MediaDetailPage = () => {
-  const { id } = useParams();
-  const location = useLocation();
-  const mediaType = location.pathname.split("/")[1]; // Можливо, замінити на useParams для типу
-  const mediaID = id;
+  const { id: mediaID, mediaType } = useParams();
   const tmdb = useTMDB();
   const [fullMediaData, setFullMediaData] = useState(null);
+  const [credits, setCredits] = useState({});
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
@@ -26,7 +26,12 @@ const MediaDetailPage = () => {
     const getMovieData = async () => {
       setLoading(true);
       try {
-        const data = await tmdb.getFullMediaData(mediaType, mediaID);
+        const data = await tmdb.getFullMediaData(mediaType, Number(mediaID));
+        const creditsResponse = await tmdb.getCredits({
+          mediaType,
+          mediaID: Number(mediaID),
+        });
+        setCredits(creditsResponse);
         setFullMediaData(data);
       } catch (error) {
         setError(error.message);
@@ -65,7 +70,7 @@ const MediaDetailPage = () => {
           </div>
         )}
       </div>
-      <div className="relative overflow-y-scroll z-10 rounded-b-xl top-20 md:top-24 px-4 md:px-16 pb-20 text-white grid grid-cols-2 gap-3 md:flex md:flex-wrap md:gap-10 lg:grid lg:grid-cols-3">
+      <div className="relative overflow-y-scroll z-10 rounded-b-xl top-20 md:top-24 px-4 md:px-16 pb-20 text-white grid grid-cols-2 gap-3 md:flex md:flex-wrap md:gap-x-10 md:gap-y-3 lg:grid lg:grid-cols-3">
         <img
           className="w-[40vw] h-full md:w-[25vw] lg:w-[20vw] rounded-xl border-2 border-gray-200 shadow-2xl shadow-gray-200/50"
           src={createFullImgUrl(500, fullMediaData.poster_path)}
@@ -108,7 +113,14 @@ const MediaDetailPage = () => {
           </div>
           <div className="flex items-center gap-2 md:gap-3">
             <RiTimeLine className="w-6 h-6" />
-            <p className="text-sm md:text-lg">{`${fullMediaData?.runtime} хв`}</p>
+            <p className="text-sm md:text-lg">
+              {fullMediaData?.episode_run_time &&
+              fullMediaData.episode_run_time.length > 0
+                ? `${fullMediaData.episode_run_time[0]} хв`
+                : fullMediaData?.runtime
+                  ? `${fullMediaData.runtime} хв`
+                  : "Невідомо"}
+            </p>
           </div>
           <div className="flex items-center gap-2 md:gap-3">
             <RiMoneyDollarCircleLine className="w-6 h-6" />
@@ -117,13 +129,33 @@ const MediaDetailPage = () => {
             </p>
           </div>
         </div>
-        <div className="col-span-2 md:w-[60vw] lg:grid-cols-2">
-          <h1 className="text-3xl font-bold mb-6 w-[60vw]">
+        <div className="text-gray-200 col-span-2 md:w-[60vw] lg:grid-cols-2">
+          <h1 className="text-3xl text-white md:text-5xl font-bold mb-1 w-[60vw]">
             {fullMediaData.title || fullMediaData.name}
           </h1>
-
-          <h2 className="text-2xl font-semibold mb-1">Overview</h2>
+          {fullMediaData?.number_of_seasons ? (
+            <div className="flex items-center mb-3 space-x-2 text-sm text-gray-300">
+              <p className="flex items-center space-x-1">
+                <span className="font-semibold">Seasons:</span>
+                <span>{fullMediaData.number_of_seasons}</span>
+              </p>
+              <span className="mx-1">|</span>
+              <p className="flex items-center space-x-1">
+                <span className="font-semibold">Episodes:</span>
+                <span>{fullMediaData.number_of_episodes}</span>
+              </p>
+              <span className="mx-1">|</span>
+              <p className="flex items-center space-x-1">
+                <VscDebugContinue color="#FFFFFF" />
+                <span>{fullMediaData.status}</span>
+              </p>
+            </div>
+          ) : null}
+          <h2 className="text-xl text-gray-400 md:text-3xl font-semibold mb-1 mt-8">
+            Overview
+          </h2>
           <p className="text-lg">{fullMediaData.overview}</p>
+          <Credits data={credits} />
         </div>
       </div>
     </>

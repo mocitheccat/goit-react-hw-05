@@ -8,6 +8,7 @@ class TMDB {
   #fullMediaData;
   #trailerParams;
   #trendingParams;
+  #creditsParams;
 
   constructor(apiKey) {
     this.#apiKey = apiKey;
@@ -26,6 +27,9 @@ class TMDB {
       language: this.#baseLanguage,
     };
     this.#trendingParams = {
+      language: this.#baseLanguage,
+    };
+    this.#creditsParams = {
       language: this.#baseLanguage,
     };
   }
@@ -225,6 +229,25 @@ class TMDB {
           (media) => media.media_type === "movie" || media.media_type === "tv",
         )
       : trendingArray.results;
+  }
+
+  /**
+   * Retrieves the credits for a specific media item (movie, TV show, etc.) by its ID.
+   *
+   * @param {object} settings - An object containing the media type and ID.
+   * @param {string} settings.mediaType - The type of media to retrieve credits for.
+   * @param {number} settings.mediaID - The ID of the media item to retrieve credits for.
+   * @param {object} [settings.params] - Additional parameters for the request.
+   * @param {string} [settings.params.language] - Language parameter.
+   * @returns {Promise<object>} - A promise that resolves to the credits of the media item.
+   * @throws {Error} - If an error occurs during the request.
+   */
+  async getCredits(settings = {}) {
+    const creditsParams = { ...this.#creditsParams, ...settings.params };
+    return await this.#makeRequest(
+      `/${settings.mediaType}/${settings.mediaID}/credits`,
+      creditsParams,
+    );
   }
 }
 

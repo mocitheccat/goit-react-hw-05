@@ -9,9 +9,11 @@ const HomePage = () => {
     trendingMovies: [],
     trendingSeries: [],
   });
+  const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
     const fetchTrending = async () => {
+      setIsLoading(true);
       try {
         const trendingMovies = await tmdb.getTrending("day", "movie");
         const trendingSeries = await tmdb.getTrending("day", "tv");
@@ -21,19 +23,22 @@ const HomePage = () => {
           trendingMovies,
           trendingSeries,
         };
+        setIsLoading(false);
         setTrending(trending);
       } catch (error) {
         console.error("Error fetching trending data:", error);
+      } finally {
+        setIsLoading(false);
       }
     };
 
     fetchTrending();
-  }, []);
+  }, [tmdb]);
 
   return (
     <>
       <Billboard />
-      <PopularToday data={trending} />
+      <PopularToday data={trending} isLoading={isLoading} />
     </>
   );
 };
