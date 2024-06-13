@@ -68,7 +68,7 @@ const Navbar = () => {
           <div className="flex-row ml-8 gap-7 hidden lg:flex">
             <NavbarItem label="Home" />
             <NavbarItem label="Series" />
-            <NavbarItem label="MoviesPage" />
+            <NavbarItem label="Movies" />
             <NavbarItem label="My list" />
           </div>
         )}
