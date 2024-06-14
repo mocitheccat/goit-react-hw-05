@@ -34,3 +34,36 @@ body {
     scrollbar-color: #ef4444 transparent;
     scrollbar-width: thin;
 }
+
+@keyframes shimmer {
+    0% {
+        background-position: 100% 0;
+    }
+    25% {
+        background-position: -25% 0;
+    }
+
+    50% {
+        background-position: -50% 0;
+    }
+
+    75% {
+        background-position: -75% 0;
+    }
+    100% {
+        background-position: -100% 0;
+    }
+}
+
+.shimmer {
+    background: linear-gradient(
+            90deg,
+            rgba(255, 255, 255, 0) 25%,
+            rgba(255, 255, 255, 0.5) 50%,
+            rgba(255, 255, 255, 0) 75%
+    );
+    background-size: 200% 100%;
+    box-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
+    animation: shimmer 1s infinite ease-in-out;
+}
+

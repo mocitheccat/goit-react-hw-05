@@ -1,9 +1,9 @@
 import MediaItem from "./MediaItem.jsx";
 import { Link } from "react-router-dom";
-import { useRef } from "react";
+import MediaSectionPlaceholder from "./Placeholders/MediaSectionPlaceholder.jsx";
 
-const MediaSection = ({ isLoading, title, link, mediaData }) => {
-  const scrollContainerRef = useRef(null);
+const MediaSection = ({ title, link, mediaData }) => {
+  if (mediaData?.length === 0) return <MediaSectionPlaceholder />;
 
   return (
     <div>
@@ -17,16 +17,18 @@ const MediaSection = ({ isLoading, title, link, mediaData }) => {
         </Link>
       </div>
       <div className="relative h-[52vw] md:h-[39vw] lg:h-[13.8vw]">
-        <div ref={scrollContainerRef} className="scrollbar-custom">
-          {mediaData?.map((media) => (
-            <div
-              key={media.id}
-              className="flex-shrink-0 w-[35vw] md:w-[25vw] h-[52vw] md:h-[39vw] lg:h-[13.8vw] snap-align-none"
-            >
-              <MediaItem isLoading={isLoading} mediaData={media} />
-            </div>
-          ))}
-        </div>
+        {mediaData?.length > 0 && (
+          <div className="scrollbar-custom flex space-x-4 overflow-x-auto">
+            {mediaData.map((media) => (
+              <div
+                key={media.id}
+                className="flex-shrink-0 w-[35vw] md:w-[25vw] h-[52vw] md:h-[39vw] lg:h-[13.8vw] snap-align-none"
+              >
+                <MediaItem mediaData={media} />
+              </div>
+            ))}
+          </div>
+        )}
       </div>
     </div>
   );
