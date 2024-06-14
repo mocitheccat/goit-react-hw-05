@@ -118,14 +118,14 @@ const MediaDetailPage = () => {
               fullMediaData.episode_run_time.length > 0
                 ? `${fullMediaData.episode_run_time[0]} хв`
                 : fullMediaData?.runtime
-                  ? `${fullMediaData.runtime} хв`
-                  : "Невідомо"}
+                  ? `${fullMediaData.runtime} m`
+                  : "Unknown"}
             </p>
           </div>
           <div className="flex items-center gap-2 md:gap-3">
             <RiMoneyDollarCircleLine className="w-6 h-6" />
             <p className="text-sm md:text-lg">
-              {fullMediaData?.budget || "Невідомо"}
+              {fullMediaData?.budget || "Unknown"}
             </p>
           </div>
         </div>

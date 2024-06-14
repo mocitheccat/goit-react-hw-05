@@ -13,7 +13,7 @@ class TMDB {
   constructor(apiKey) {
     this.#apiKey = apiKey;
     this.#baseUrl = import.meta.env.VITE_BASE_API_URL;
-    this.#baseLanguage = "uk-UA";
+    this.#baseLanguage = "en-US";
     this.#multiSearchParams = {
       query: "",
       include_adult: false,

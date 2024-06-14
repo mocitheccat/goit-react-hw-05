@@ -11,18 +11,18 @@ const MediaSection = ({ title, link, mediaData }) => {
         <p className="text-white text-xs md:text-lg lg:text-xl">{title}</p>
         <Link
           to={link}
-          className="text-white text-[8px] md:text-base border-2 border-gray-200 bg-gray-900 rounded-md px-1 py-0.5 hover:border-red-500"
+          className="text-white text-[8px] md:text-base border border-gray-400 bg-gray-400/30 rounded-md px-2 py-0.5 hover:border-red-500 hover:bg-gray-400/50"
         >
           Show More
         </Link>
       </div>
-      <div className="relative h-[52vw] md:h-[39vw] lg:h-[13.8vw]">
+      <div className="relative py-2">
         {mediaData?.length > 0 && (
           <div className="scrollbar-custom flex space-x-4 overflow-x-auto">
             {mediaData.map((media) => (
               <div
                 key={media.id}
-                className="flex-shrink-0 w-[35vw] md:w-[25vw] h-[52vw] md:h-[39vw] lg:h-[13.8vw] snap-align-none"
+                className="flex-shrink-0 w-[35vw] md:w-[25vw] h-[52vw] md:h-[39vw] lg:h-[14vw] snap-align-none"
               >
                 <MediaItem mediaData={media} />
               </div>
