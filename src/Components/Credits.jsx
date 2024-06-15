@@ -1,35 +1,44 @@
 import PersonMiniCard from "./PersonMiniCard.jsx";
 import { useMemo, useState } from "react";
 
-const Credits = ({ data }) => {
+const Credits = ({ data, fullMediadata }) => {
   const [isMoreCast, setIsMoreCast] = useState(false);
 
   const handleMoreClick = () => {
-    console.log(isMoreCast);
     setIsMoreCast(!isMoreCast);
   };
-  const director = useMemo(() => {
-    return data.crew.find((member) => member.job === "Director");
-  }, [data]);
+  const directors = useMemo(() => {
+    if (fullMediadata.number_of_seasons) {
+      return fullMediadata.created_by.map((creator) => {
+        return creator;
+      });
+    } else {
+      return data.crew.filter((member) => member.job === "Director");
+    }
+  }, [data, fullMediadata]);
 
   return (
     <>
       <h2 className="text-lg text-gray-400 md:text-2xl font-semibold my-3">
-        Director(s)
+        {fullMediadata.number_of_seasons ? "Creator(s)" : "Director(s)"}
       </h2>
-      <div className="flex">
-        <PersonMiniCard key={director?.id} person={director} />
+      <div className="flex space-x-2">
+        {directors.map((director) => (
+          <PersonMiniCard key={director.id} person={director} />
+        ))}
       </div>
       <div className="flex justify-between items-center">
         <h2 className="text-lg text-gray-400 md:text-2xl font-semibold my-3">
           Cast
         </h2>
-        <button
-          className="text-white text-[8px] md:text-base border border-gray-400 bg-gray-400/30 rounded-md px-2 py-0.5 hover:border-red-500 hover:bg-gray-400/50"
-          onClick={handleMoreClick}
-        >
-          {`Show ${!isMoreCast ? "more" : "less"}`}
-        </button>
+        {data.cast.length > 10 && (
+          <button
+            className="text-white text-[8px] md:text-base border border-gray-400 bg-gray-400/30 rounded-md px-2 py-0.5 hover:border-red-500 hover:bg-gray-400/50"
+            onClick={handleMoreClick}
+          >
+            {`Show ${!isMoreCast ? "more" : "less"}`}
+          </button>
+        )}
       </div>
 
       {!isMoreCast ? (

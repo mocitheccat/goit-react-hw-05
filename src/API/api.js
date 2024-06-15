@@ -135,50 +135,51 @@ class TMDB {
   //   }
   // }
 
-  // /**
-  //  * Retrieves the URL of a YouTube video from its ID.
-  //  *
-  //  * @param {string} mediaType - The type of media to retrieve details for.
-  //  * @param {number} mediaID - The ID of the media item to retrieve details for.
-  //  * @param {object} [params] - Additional parameters for the request.
-  //  * @param {string} [params.language] - The language of the requested details.
-  //  * @returns {Promise<object>} - A promise that resolves to the full details of the media item.
-  //  * @throws {Error} - If an error occurs during the request.
-  //  */
-  // async getTrailer(mediaType, mediaID, params = {}) {
-  //   const trailerParams = { ...this.#trailerParams, ...params };
-  //   const response = await this.#makeRequest(
-  //     `/${mediaType}/${mediaID}/videos`,
-  //     trailerParams,
-  //   );
-  //   const videos = response.results;
+  /**
+   * Retrieves the URL of a YouTube video from its ID.
+   *
+   * @param {string} mediaType - The type of media to retrieve details for.
+   * @param {number} mediaID - The ID of the media item to retrieve details for.
+   * @param {object} [params] - Additional parameters for the request.
+   * @param {string} [params.language] - The language of the requested details.
+   * @returns {Promise<object>} - A promise that resolves to the full details of the media item.
+   * @throws {Error} - If an error occurs during the request.
+   */
+  async getTrailer(mediaType, mediaID, params = {}) {
+    const trailerParams = { ...this.#trailerParams, ...params };
+    const response = await this.#makeRequest(
+      `/${mediaType}/${mediaID}/videos`,
+      trailerParams,
+    );
+    const videos = response.results;
 
-  //   const trailer = videos.find(
-  //     (video) => video?.type === "Trailer" && video?.site === "YouTube",
-  //   );
-  //   if (trailer) {
-  //     // return `https://www.youtube.com/watch?v=${trailer.key}`  for iframe;
-  //     const videoData = await this.#getVideoUrl(
-  //       `https://youtu.be/${trailer.key}`,
-  //     );
-  //     console.log(videoData);
-  //     let videoUrl = this.#findFittableQualityMp4Trailer(
-  //       videoData?.data?.video_without_audio,
-  //     );
-  //     if (!videoUrl) {
-  //       videoUrl = this.#findFittableQualityMp4Trailer(
-  //         videoData?.data?.video_with_audio,
-  //       );
-  //     }
-
-  //     if (!videoUrl) {
-  //       throw new Error("Trailer not found");
-  //     }
-  //     return videoUrl;
-  //   } else {
-  //     throw new Error("Trailer not found");
-  //   }
-  // }
+    const trailer = videos.find(
+      (video) => video?.type === "Trailer" && video?.site === "YouTube",
+    );
+    if (trailer) {
+      return `https://www.youtube.com/embed/${trailer.key}`;
+      // return `https://www.youtube.com/watch?v=${trailer.key}`; // for iframe;
+      // const videoData = await this.#getVideoUrl(
+      //   `https://youtu.be/${trailer.key}`,
+      // );
+      // console.log(videoData);
+      // let videoUrl = this.#findFittableQualityMp4Trailer(
+      //   videoData?.data?.video_without_audio,
+      // );
+      // if (!videoUrl) {
+      //   videoUrl = this.#findFittableQualityMp4Trailer(
+      //     videoData?.data?.video_with_audio,
+      //   );
+      // }
+      //
+      // if (!videoUrl) {
+      //   throw new Error("Trailer not found");
+      // }
+      // return videoUrl;
+    } else {
+      throw new Error("Trailer not found");
+    }
+  }
 
   // /**
   //  * Finds a fitting quality MP4 trailer from the provided videos.

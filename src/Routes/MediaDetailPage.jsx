@@ -8,11 +8,13 @@ import {
   RiBarChart2Line,
   RiTimeLine,
   RiMoneyDollarCircleLine,
+  RiYoutubeLine,
 } from "react-icons/ri";
 import { VscDebugContinue } from "react-icons/vsc";
 import { MdOutlineTheaterComedy } from "react-icons/md";
 import { createFullImgUrl } from "../utils/helpers.js";
 import Credits from "../Components/Credits.jsx";
+import TrailerModal from "../Components/TrailerModal.jsx";
 
 const MediaDetailPage = () => {
   const { id: mediaID, mediaType } = useParams();
@@ -21,6 +23,7 @@ const MediaDetailPage = () => {
   const [credits, setCredits] = useState({});
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [isOpenTrailerModal, setIsOpenTrailerModal] = useState(false);
 
   useEffect(() => {
     const getMovieData = async () => {
@@ -54,6 +57,10 @@ const MediaDetailPage = () => {
   if (error) return <div>Error: {error}</div>;
 
   if (!fullMediaData) return <div>No data available</div>;
+
+  const handleWatchTrailer = () => {
+    setIsOpenTrailerModal(true);
+  };
 
   return (
     <>
@@ -151,13 +158,32 @@ const MediaDetailPage = () => {
               </p>
             </div>
           ) : null}
+
+          <button
+            className="text gray-300 flex items-center justify-center px-4 py-1 rounded-md border border-gray-400 bg-gray-400/30 hover:border-red-500 hover:bg-zinc-800/90  hover:text-red-600"
+            onClick={handleWatchTrailer}
+          >
+            <RiYoutubeLine className="w-6 h-6 mr-1" />
+            Watch trailer
+          </button>
           <h2 className="text-xl text-gray-400 md:text-3xl font-semibold mb-1 mt-8">
             Overview
           </h2>
           <p className="text-lg">{fullMediaData.overview}</p>
-          <Credits data={credits} />
+          <Credits data={credits} fullMediadata={fullMediaData} />
         </div>
       </div>
+      {isOpenTrailerModal && (
+        <TrailerModal
+          info={{
+            tmdb,
+            mediaType,
+            mediaID,
+            title: fullMediaData.title || fullMediaData.name,
+          }}
+          closeModal={() => setIsOpenTrailerModal(false)}
+        />
+      )}
     </>
   );
 };
