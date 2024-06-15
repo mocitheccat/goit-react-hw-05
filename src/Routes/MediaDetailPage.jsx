@@ -77,7 +77,7 @@ const MediaDetailPage = () => {
           </div>
         )}
       </div>
-      <div className="relative overflow-y-scroll z-10 rounded-b-xl top-20 md:top-24 px-4 md:px-16 pb-20 text-white grid grid-cols-2 gap-3 md:flex md:flex-wrap md:gap-x-10 md:gap-y-3 lg:grid lg:grid-cols-3">
+      <div className="relative overflow-y-scroll z-10 rounded-b-xl top-20 md:top-24 px-4 md:px-16 pb-20 text-white grid grid-cols-2 gap-3 md:flex md:flex-wrap md:gap-x-2 md:gap-y-3 lg:grid lg:grid-cols-3">
         <img
           className="w-[40vw] h-full md:w-[25vw] lg:w-[20vw] rounded-xl border-2 border-gray-200 shadow-2xl shadow-gray-200/50"
           src={createFullImgUrl(500, fullMediaData.poster_path)}
@@ -137,7 +137,7 @@ const MediaDetailPage = () => {
           </div>
         </div>
         <div className="text-gray-200 col-span-2 md:w-[60vw] lg:grid-cols-2">
-          <h1 className="text-3xl text-white md:text-5xl font-bold mb-1 w-[60vw]">
+          <h1 className="text-3xl text-white md:text-5xl font-bold mb-3 w-[60vw]">
             {fullMediaData.title || fullMediaData.name}
           </h1>
           {fullMediaData?.number_of_seasons ? (

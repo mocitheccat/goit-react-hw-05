@@ -20,3 +20,18 @@ export const createFullImgUrl = (imageWidth, imagePath) => {
 export const createRandomMediaBackdropImage = (imageUrlsArray) => {
   return imageUrlsArray[Math.floor(Math.random() * imageUrlsArray.length)];
 };
+
+/**
+ * Filters the given results by the specified types.
+ *
+ * @param {Array} results - The array of results to be filtered.
+ * @param {Array} types - The array of types to filter by.
+ *
+ * @returns {Object} An object containing filtered results for each type.
+ */
+export const filterResultsByMediaType = (results, types) => {
+  return types.reduce((acc, type) => {
+    acc[type] = results.filter((result) => result.media_type === type);
+    return acc;
+  }, {});
+};

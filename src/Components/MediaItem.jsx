@@ -5,12 +5,12 @@ const MediaItem = ({ mediaData }) => {
   const navigate = useNavigate();
   const posterUrl = createFullImgUrl(500, mediaData?.poster_path);
   const handleClick = () => {
-    navigate(`${mediaData?.media_type}/${mediaData?.id}`);
+    navigate(`/${mediaData?.media_type}/${mediaData?.id}`);
   };
 
   return (
     <div
-      className="group bg-zinc-900 border-2 border-gray-600 hover:border-gray-200 hover:border-2 rounded-xl overflow-hidden col-span relative h-[93%] lg:h-[91%]"
+      className="bg-zinc-900 border-2 border-gray-600 hover:border-gray-200 hover:border-2 rounded-xl overflow-hidden min-w-[35vw] md:min-w-[25vw] h-[52vw] md:min-h-[39vw] lg:min-h-[14vw]"
       onClick={handleClick}
     >
       {mediaData?.poster_path ? (
