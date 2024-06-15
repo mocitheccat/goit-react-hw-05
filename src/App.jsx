@@ -6,6 +6,7 @@ import { TMDBProvider } from "./Context/ApiContext";
 import SearchPage from "./Routes/SearchPage.jsx";
 import Layout from "./Components/Layout.jsx";
 import MediaDetailPage from "./Routes/MediaDetailPage.jsx";
+import UserSavesList from "./Routes/UserSavesList.jsx";
 
 function App() {
   return (
@@ -39,6 +40,15 @@ function App() {
             element={
               <ProtectedRoute>
                 <MediaDetailPage />
+              </ProtectedRoute>
+            }
+          />
+
+          <Route
+            path="/profile/my-list"
+            element={
+              <ProtectedRoute>
+                <UserSavesList />
               </ProtectedRoute>
             }
           />
