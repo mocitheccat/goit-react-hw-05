@@ -1,5 +1,21 @@
-const MediaSectionPlaceholder = () => {
+const MediaSectionPlaceholder = ({ more = 1 }) => {
   const placeholders = new Array(3).fill(null);
+
+  if (more > 1) {
+    placeholders.push(...new Array(5).fill(null));
+    return (
+      <div className="grid grid-rows-1">
+        <div className="grid grid-cols-2 md:grid-cols-3 gap-2 md:gap-4">
+          {placeholders?.map((_, index) => (
+            <div
+              key={index}
+              className="bg-zinc-900 border-2 border-gray-600 hover:border-gray-200 hover:border-2 rounded-xl overflow-hidden min-w-[35vw] md:min-w-[25vw] h-[52vw] md:min-h-[39vw] lg:min-h-[14vw] shimmer"
+            ></div>
+          ))}
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="text-transparent">

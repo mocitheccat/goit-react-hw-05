@@ -7,6 +7,7 @@ import SearchPage from "./Routes/SearchPage.jsx";
 import Layout from "./Components/Layout.jsx";
 import MediaDetailPage from "./Routes/MediaDetailPage.jsx";
 import UserSavesList from "./Routes/UserSavesList.jsx";
+import FullSearchResults from "./Routes/FullSearchResults.jsx";
 
 function App() {
   return (
@@ -32,7 +33,16 @@ function App() {
                 <SearchPage />
               </ProtectedRoute>
             }
-          />
+          >
+            <Route
+              path="ultra-search/:mediaType"
+              element={
+                <ProtectedRoute>
+                  <FullSearchResults />
+                </ProtectedRoute>
+              }
+            />
+          </Route>
 
           {/* Media Detail Routes (combined for movies and tv shows) */}
           <Route

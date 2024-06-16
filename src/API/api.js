@@ -9,13 +9,14 @@ class TMDB {
   #trailerParams;
   #trendingParams;
   #creditsParams;
+  #movieSearchParams;
+  #seriesSearchParams;
 
   constructor(apiKey) {
     this.#apiKey = apiKey;
     this.#baseUrl = import.meta.env.VITE_BASE_API_URL;
     this.#baseLanguage = "en-US";
     this.#multiSearchParams = {
-      query: "",
       include_adult: false,
       language: this.#baseLanguage,
       page: 1,
@@ -31,6 +32,21 @@ class TMDB {
     };
     this.#creditsParams = {
       language: this.#baseLanguage,
+    };
+    this.#movieSearchParams = {
+      include_adult: false,
+      language: this.#baseLanguage,
+      primary_release_year: undefined,
+      page: 1,
+      region: undefined,
+      year: undefined,
+    };
+    this.#seriesSearchParams = {
+      first_air_date_year: undefined,
+      include_adult: false,
+      language: this.#baseLanguage,
+      page: 1,
+      year: undefined,
     };
   }
 
@@ -63,7 +79,6 @@ class TMDB {
    *
    * @param {string} query - The search query.
    * @param {object} [params] - Additional parameters for the search.
-   * @param {string} [params.query] - The search query for filtering results.
    * @param {boolean} [params.include_adult] - Include adult content in the search results.
    * @param {string} [params.language] - The language of the search results.
    * @param {number} [params.page] - The page number of the search results.
@@ -73,6 +88,43 @@ class TMDB {
   async multiSearch(query, params = {}) {
     const searchParams = { ...this.#multiSearchParams, ...params, query };
     return await this.#makeRequest("/search/multi", searchParams);
+  }
+
+  /**
+   * Searches for movies, TV shows, and people using a multi-search endpoint.
+   *
+   * @param {string} query - The search query.
+   * @param {object} [params] - Additional parameters for the search.
+   * @param {boolean} [params.include_adult] - Include adult content in the search results.
+   * @param {string} [params.language] - The language of the search results.
+   * @param {string} [params.primary_release_year] - The primary release year
+   * @param {number} [params.page] - The page number of the search results.
+   * @param {string} [params.region] - The region where movies was made.
+   * @param {string} [params.year] - The exact year when movie was made.
+   * @returns {Promise<object>} - A promise that resolves to the search results.
+   * @throws {Error} - If an error occurs during the request.
+   */
+  async searchMovies(query, params = {}) {
+    const searchParams = { ...this.#movieSearchParams, ...params, query };
+    return await this.#makeRequest("/search/movie", searchParams);
+  }
+
+  /**
+   * Searches for TV shows using a multi-search endpoint.
+   *
+   * @param {string} query - The search query.
+   * @param {object} [params] - Additional parameters for the search.
+   * @param {number} [params.first_air_date_year] - The year of the first air of the TV shows. Search only the first air date. Valid values are: 1000..9999
+   * @param {boolean} [params.include_adult] - Include adult content in the search results.
+   * @param {string} [params.language] - The language of the search results.
+   * @param {number} [params.page] - The page number of the search results.
+   * @param {number} [params.year] - Search the first air date and all episode air dates. Valid values are: 1000..9999
+   * @returns {Promise<object>} - A promise that resolves to the search results.
+   * @throws {Error} - If an error occurs during the request.
+   */
+  async searchSeries(query, params = {}) {
+    const searchParams = { ...this.#seriesSearchParams, ...params, query };
+    return await this.#makeRequest("/search/tv", searchParams);
   }
 
   /**

@@ -1,56 +1,84 @@
 import { useState, useEffect, useCallback } from "react";
 import SearchBar from "../Components/SearchBar";
-import { useSearchParams } from "react-router-dom";
+import {
+  useNavigate,
+  useSearchParams,
+  Outlet,
+  useLocation,
+} from "react-router-dom";
 import { useTMDB } from "../hooks/useTMDB";
-import { filterResultsByMediaType } from "../utils/helpers";
-import MediaSection from "../Components/MediaSection.jsx";
+import MediaSection from "../Components/MediaSection";
+import MediaSectionPlaceholder from "../Components/Placeholders/MediaSectionPlaceholder";
 
 const SearchPage = () => {
-  const [query, setQuery] = useState("");
-  const [results, setResults] = useState({});
-  // const [isLoading, setIsLoading] = useState(false);
+  const initialState = {
+    movies: { results: [], totalMatch: 0, mediaType: "movie" },
+    series: { results: [], totalMatch: 0, mediaType: "tv" },
+  };
   const tmdb = useTMDB();
+  const [query, setQuery] = useState("");
+  const [results, setResults] = useState(initialState);
+  const [isLoading, setIsLoading] = useState(false);
   const [searchParams, setSearchParams] = useSearchParams();
+  const navigate = useNavigate();
+  const location = useLocation();
 
   const performSearch = useCallback(
     async (query) => {
-      // setIsLoading(true);
+      setIsLoading(true);
       try {
-        const searchResults = await tmdb.multiSearch(query);
-        const filteredResults = filterResultsByMediaType(
-          searchResults.results,
-          ["movie", "tv"],
-        );
-        setResults(filteredResults);
+        const [moviesResponse, seriesResponse] = await Promise.all([
+          tmdb.searchMovies(query),
+          tmdb.searchSeries(query),
+        ]);
+
+        setResults({
+          movies: {
+            ...initialState.movies,
+            results: moviesResponse.results,
+            totalMatch: moviesResponse.total_results,
+          },
+          series: {
+            ...initialState.series,
+            results: seriesResponse.results,
+            totalMatch: seriesResponse.total_results,
+          },
+        });
       } catch (error) {
         console.error("Error fetching search results:", error);
       } finally {
-        // setIsLoading(false);
+        setIsLoading(false);
       }
     },
     [tmdb],
   );
 
   useEffect(() => {
-    const initialQuery =
-      searchParams.get("q") || sessionStorage.getItem("searchQuery") || "";
-    setQuery(initialQuery);
-    if (initialQuery) {
-      performSearch(initialQuery);
-    }
+    const initiateSearchIfQueryExists = async () => {
+      const initialQuery =
+        searchParams.get("q") || sessionStorage.getItem("searchQuery") || "";
+      setQuery(initialQuery);
+      if (initialQuery) {
+        await performSearch(initialQuery);
+      }
+    };
+    initiateSearchIfQueryExists();
   }, [performSearch, searchParams]);
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     setSearchParams({ q: query });
     sessionStorage.setItem("searchQuery", query);
-    performSearch(query);
+    await performSearch(query);
   };
 
-  const { movie: movies, tv: series } = results;
+  const handleShowMore = (mediaType) => {
+    navigate(`ultra-search/${mediaType}`, { state: { query, page: 1 } });
+  };
 
-  console.log("movies", movies);
-  console.log("series", series);
+  const { movies, series } = results;
+
+  const isNestedRoute = location.pathname.includes("ultra-search");
 
   return (
     <div className="relative overflow-y-scroll z-10 rounded-b-xl top-20 md:top-24 px-4 md:px-16 pb-20 text-white grid grid-cols-1 gap-3 md:flex md:flex-wrap md:gap-x-10 md:gap-y-3 lg:grid lg:grid-cols-3">
@@ -59,11 +87,41 @@ const SearchPage = () => {
         onQueryChange={setQuery}
         onSubmit={handleSubmit}
       />
-      <div className="px-4 md:px-12 mt-8 space-y-2 pb-2">
-        <MediaSection title="Founded movies" mediaData={movies} showMore />
-
-        <MediaSection title="Founded series" mediaData={series} showMore />
-      </div>
+      {isNestedRoute ? (
+        <Outlet />
+      ) : (
+        <>
+          {isLoading ? (
+            <div className="mt-8 space-y-2 pb-2">
+              <MediaSectionPlaceholder />
+              <MediaSectionPlaceholder />
+            </div>
+          ) : (
+            <>
+              {movies.results && movies.results.length > 0 && (
+                <div className="mt-8 space-y-2 pb-2">
+                  <MediaSection
+                    title="Founded movies"
+                    mediaData={movies}
+                    onMoreClick={() => handleShowMore(movies.mediaType)}
+                    totalMatch={movies.totalMatch}
+                  />
+                </div>
+              )}
+              {series.results && series.results.length > 0 && (
+                <div className="mt-8 space-y-2 pb-2">
+                  <MediaSection
+                    title="Founded series"
+                    mediaData={series}
+                    onMoreClick={() => handleShowMore(series.mediaType)}
+                    totalMatch={series.totalMatch}
+                  />
+                </div>
+              )}
+            </>
+          )}
+        </>
+      )}
     </div>
   );
 };

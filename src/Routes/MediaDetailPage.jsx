@@ -72,9 +72,14 @@ const MediaDetailPage = () => {
             className="absolute inset-0 w-screen h-screen object-cover brightness-[40%]"
           />
         ) : (
-          <div className="absolute inset-0 flex items-center justify-center">
-            <ThreeDots color="#FFFFFF" />
-          </div>
+          <img
+            src={createFullImgUrl("original", fullMediaData.poster_path)}
+            alt="Backdrop"
+            className="absolute inset-0 w-screen h-screen object-cover brightness-[40%]"
+          />
+          // <div className="absolute inset-0 flex items-center justify-center">
+          //   <ThreeDots color="#FFFFFF" />
+          // </div>
         )}
       </div>
       <div className="relative overflow-y-scroll z-10 rounded-b-xl top-20 md:top-24 px-4 md:px-16 pb-20 text-white grid grid-cols-2 gap-3 md:flex md:flex-wrap md:gap-x-2 md:gap-y-3 lg:grid lg:grid-cols-3">
