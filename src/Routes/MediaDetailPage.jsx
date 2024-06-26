@@ -73,7 +73,10 @@ const MediaDetailPage = () => {
           />
         ) : (
           <img
-            src={createFullImgUrl("original", fullMediaData.poster_path)}
+            src={
+              createFullImgUrl("original", fullMediaData.poster_path) ||
+              "../../public/images/poster-placeholder.png"
+            }
             alt="Backdrop"
             className="absolute inset-0 w-screen h-screen object-cover brightness-[40%]"
           />

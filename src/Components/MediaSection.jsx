@@ -1,22 +1,21 @@
 import MediaItem from "./MediaItem";
-import { Link } from "react-router-dom";
+import MediaItemsPlaceholder from "./Placeholders/MediaItemsPlaceholder.jsx";
 
-const MediaSection = ({ title, link, mediaData, onMoreClick }) => {
+const MediaSection = ({
+  title,
+  mediaData = [],
+  onClick,
+  isLoading,
+  displayGrid,
+  mediaType,
+}) => {
   return (
-    <div className="grid grid-rows-1">
-      <div className="flex justify-between items-center text-white mb-2">
-        <p className="text-white text-xs md:text-lg lg:text-xl">{title}</p>
-        {link && (
-          <Link
-            to={link}
-            className="text-white text-[8px] md:text-base border border-gray-400 bg-gray-400/30 rounded-md px-2 py-0.5 hover:border-red-500 hover:bg-gray-400/50"
-          >
-            Show More
-          </Link>
-        )}
-        {!link && (
+    <>
+      <div className="flex justify-between items-center text-white">
+        <p className="text-white text-lg md:text-xl lg:text-2xl">{title}</p>
+        {onClick && (
           <button
-            onClick={onMoreClick}
+            onClick={onClick}
             className="text-white text-[8px] md:text-base border border-gray-400 bg-gray-400/30 rounded-md px-2 py-0.5 hover:border-red-500 hover:bg-gray-400/50"
           >
             Show More
@@ -24,22 +23,29 @@ const MediaSection = ({ title, link, mediaData, onMoreClick }) => {
         )}
       </div>
 
-      <div className="flex scrollbar-custom overflow-x-auto space-x-2 py-3">
-        {mediaData.results
-          ? mediaData.results
-              .slice(0, 10)
-              .map((media) => (
-                <MediaItem
-                  key={media.id}
-                  mediaData={media}
-                  mediaType={mediaData.mediaType}
-                />
-              ))
-          : mediaData
-              ?.slice(0, 10)
-              .map((media) => <MediaItem key={media.id} mediaData={media} />)}
+      <div
+        className={
+          !displayGrid
+            ? "flex scrollbar-custom overflow-x-auto space-x-2 py-2 md:py-3 lg:py-4 mb-6"
+            : "grid grid-cols-2 gap-3 md:grid-cols-3 md:gap-2"
+        }
+      >
+        {isLoading ? (
+          <MediaItemsPlaceholder />
+        ) : (
+          mediaData
+            .slice(0, 10)
+            .map((media) => (
+              <MediaItem
+                key={media.id}
+                mediaData={media}
+                isGrid={displayGrid}
+                mediaType={mediaType}
+              />
+            ))
+        )}
       </div>
-    </div>
+    </>
   );
 };
 

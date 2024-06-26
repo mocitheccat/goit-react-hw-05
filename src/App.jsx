@@ -26,23 +26,23 @@ function App() {
               </ProtectedRoute>
             }
           />
+          {/*<Route*/}
+          {/*  path="/search"*/}
+          {/*  element={*/}
+          {/*    <ProtectedRoute>*/}
+          {/*      <SearchPage />*/}
+          {/*    </ProtectedRoute>*/}
+          {/*  }*/}
+          {/*>*/}
           <Route
             path="/search"
             element={
               <ProtectedRoute>
-                <SearchPage />
+                <FullSearchResults />
               </ProtectedRoute>
             }
-          >
-            <Route
-              path="ultra-search/:mediaType"
-              element={
-                <ProtectedRoute>
-                  <FullSearchResults />
-                </ProtectedRoute>
-              }
-            />
-          </Route>
+          />
+          {/*</Route>*/}
 
           {/* Media Detail Routes (combined for movies and tv shows) */}
           <Route

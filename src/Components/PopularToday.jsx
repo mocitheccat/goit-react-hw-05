@@ -1,27 +1,26 @@
-import MediaSection from "./MediaSection.jsx";
-import MediaSectionPlaceholder from "./Placeholders/MediaSectionPlaceholder.jsx";
+import MediaSection from "./MediaSection";
 
 const PopularToday = ({ data }) => {
+  const isLoading = !data.trendingSeries.length && !data.trendingMovies.length;
+
   return (
-    <div className="px-4 md:px-12 mt-8 space-y-2 pb-20">
-      <p className="text-white text-xl md:text-2xl lg:text-4xl font-semibold">
+    <div className="px-4 md:px-12 mt-8 pb-20">
+      <p className="text-white text-2xl md:text-3xl lg:text-4xl font-semibold mb-4">
         Popular Today
       </p>
-      {data?.trendingSeries.length === 0 ? (
+      {isLoading ? (
         <>
-          <MediaSectionPlaceholder />
-          <MediaSectionPlaceholder />
+          <MediaSection title="Trending Movies" isLoading />
+          <MediaSection title="Trending Series" isLoading />
         </>
       ) : (
         <>
           <MediaSection
             title="Trending Movies"
-            link="/movies"
             mediaData={data.trendingMovies}
           />
           <MediaSection
             title="Trending Series"
-            link="/series"
             mediaData={data.trendingSeries}
           />
         </>

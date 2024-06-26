@@ -1,8 +1,8 @@
 import useBillboard from "../hooks/useBillboard";
 import { useTMDB } from "../hooks/useTMDB.js";
 
-import { FaCircleInfo } from "react-icons/fa6";
 import { Link } from "react-router-dom";
+import { RiInformation2Line } from "react-icons/ri";
 import BillboardPlaceholder from "./Placeholders/BillboardPlaceholder.jsx";
 
 const Billboard = () => {
@@ -48,8 +48,8 @@ const Billboard = () => {
                 transition
               "
             >
-              <FaCircleInfo className="w-4 mr-1" />
-              More Info
+              <RiInformation2Line className="w-4 mr-1" />
+              View details
             </Link>
           </div>
         </div>
