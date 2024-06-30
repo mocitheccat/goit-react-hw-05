@@ -1,350 +1,253 @@
-import { useCallback, useEffect, useState } from "react";
-import { useSearchParams } from "react-router-dom";
 import { useTMDB } from "../hooks/useTMDB.js";
+import { useEffect, useState } from "react";
+import { useSearchParams } from "react-router-dom";
 import SearchBar from "../Components/SearchBar.jsx";
 import MediaSection from "../Components/MediaSection.jsx";
+import SearchResultsToggle from "../Components/SearchResultsToggle.jsx";
+import Pagination from "../Components/Pagination.jsx";
 
 const FullSearchResults = () => {
   const tmdb = useTMDB();
-  const [searchParams, setSearchParams] = useSearchParams();
-  const [query, setQuery] = useState(searchParams.get("q") || "");
-  const [mediaType, setMediaType] = useState(
-    searchParams.get("type") || "movie",
-  );
-  const [page, setPage] = useState(Number(searchParams.get("page")) || 1);
-  const [isLoading, setIsLoading] = useState(false);
-  // const [response, setResponse] = useState();
-  const [response, setResponse] = useState({
-    moviesResponse: { results: [] },
-    seriesResponse: { results: [] },
-  });
-  const performSearch = useCallback(
-    async (query, page = 1) => {
-      setIsLoading(true);
-      try {
-        const results = {};
-        const moviesResponse = await tmdb.searchMovies(query, { page });
-        const seriesResponse = await tmdb.searchSeries(query, { page });
-        results.moviesResponse = moviesResponse;
-        results.seriesResponse = seriesResponse;
-        setResponse(results);
-        console.log(results);
-      } catch (error) {
-        console.error(error);
-      } finally {
-        setIsLoading(false);
-      }
+  const initialResults = {
+    movies: {
+      results: [],
+      total_results: 0,
+      total_pages: 0,
+      mediaType: "movie",
     },
-    [tmdb],
-  );
+    series: {
+      results: [],
+      total_results: 0,
+      total_pages: 0,
+      mediaType: "tv",
+    },
+  };
+  const [query, setQuery] = useState("");
+  const [inputQuery, setInputQuery] = useState("");
+  const [mediaType, setMediaType] = useState(initialResults.movies.mediaType);
+  const [moviesPage, setMoviesPage] = useState(1);
+  const [seriesPage, setSeriesPage] = useState(1);
+  const [results, setResults] = useState(initialResults);
+  const [isLoading, setIsLoading] = useState(false);
+  const [searchParams, setSearchParams] = useSearchParams();
+
+  const performSearch = async () => {
+    setIsLoading(true);
+    try {
+      let result;
+      const movieSearchResponse = await tmdb.searchMovies(query, {
+        page: moviesPage,
+      });
+      const seriesSearchResponse = await tmdb.searchSeries(query, {
+        page: seriesPage,
+      });
+      result = {
+        movies: { ...initialResults.movies, ...movieSearchResponse },
+        series: { ...initialResults.series, ...seriesSearchResponse },
+      };
+      console.log(result);
+      setResults(result);
+    } catch (error) {
+      console.error("Error performing search:", error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
   const handleSubmit = async (e) => {
+    console.log("submit");
     e.preventDefault();
-    setSearchParams({ q: query, type: "movie", page: page });
-    await performSearch(query);
+    setQuery(inputQuery);
+    // const params = {
+    //   q: inputQuery,
+    //   type: mediaType,
+    //   page: { movie: "1", tv: "1" },
+    // };
+    const params = {
+      q: inputQuery,
+      type: mediaType,
+      page: String(
+        mediaType === initialResults.movies.mediaType ? moviesPage : seriesPage,
+      ),
+    };
+    setSearchParams(params);
+    // sessionStorage.setItem("searchParams", JSON.stringify(params)); // Оновлення sessionStorage
   };
 
   const changeResults = (mediaType) => {
     setMediaType(mediaType);
-    const newParams = { q: query, type: mediaType, page: 1 };
+    const newParams = {
+      q: query,
+      type: mediaType,
+      page: String(
+        mediaType === initialResults.movies.mediaType ? moviesPage : seriesPage,
+      ),
+    };
     setSearchParams(newParams);
-    sessionStorage.setItem("searchParams", JSON.stringify(newParams)); // Оновлення sessionStorage
+    // sessionStorage.setItem("searchParams", JSON.stringify(newParams)); // Оновлення sessionStorage
   };
 
   useEffect(() => {
+    console.log("Перший юзефект");
     const savedParams = JSON.parse(sessionStorage.getItem("searchParams"));
     if (savedParams) {
-      console.log("Перший юзефект");
-      setSearchParams(savedParams);
-
-      setQuery(savedParams.q);
-      setMediaType(savedParams.type);
-      setPage(savedParams.page);
-      performSearch(savedParams.q, Number(savedParams.page));
+      savedParams.mediaType === initialResults.movies.mediaType
+        ? setSearchParams(savedParams.movie)
+        : setSearchParams(savedParams.tv);
     }
-  }, [performSearch]);
+  }, []);
 
   useEffect(() => {
-    if (searchParams.get("q")) {
-      console.log("другий юзефект");
-      sessionStorage.setItem(
-        "searchParams",
-        JSON.stringify({
-          q: searchParams.get("q"),
-          type: searchParams.get("type"),
-          page: searchParams.get("page"),
-        }),
-      );
-    } else {
-      sessionStorage.clear();
-    }
-  }, [searchParams]);
+    const initializeSearchOnQueryParams = async () => {
+      console.log("initializeSearchOnQueryParams");
+      // if (searchParams.size) {
+      //   const newParams = {
+      //     q: searchParams.get("q"),
+      //     type: searchParams.get("type"),
+      //     page: searchParams.get("page"),
+      //   };
+      //   setQuery(newParams.q);
+      //   setInputQuery(newParams.q);
+      //   setMediaType(newParams.type);
+      //   // Need to fix when change media type and page, only one media type remember its page
+      //
+      //   newParams.type === initialResults.movies.mediaType
+      //     ? (setMoviesPage(Number(newParams.page)))
+      //     : setSeriesPage(Number(newParams.page));
+      //   sessionStorage.setItem("searchParams", JSON.stringify(newParams)); // Оновлення sessionStorage
+      // }
+      if (searchParams.size) {
+        const newSessionParams = {
+          mediaType: searchParams.get("type"),
+          movie: {
+            q: searchParams.get("q"),
+            type: initialResults.movies.mediaType,
+            page:
+              searchParams.get("type") === initialResults.movies.mediaType
+                ? Number(searchParams.get("page"))
+                : moviesPage,
+          },
+          tv: {
+            q: searchParams.get("q"),
+            type: initialResults.series.mediaType,
+            page:
+              searchParams.get("type") === initialResults.series.mediaType
+                ? Number(searchParams.get("page"))
+                : seriesPage,
+          },
+        };
 
-  useEffect(() => {
-    console.log("scroll");
-    const handleScroll = () => {
-      if (
-        window.innerHeight + document.documentElement.scrollTop >=
-        document.documentElement.offsetHeight - 50
-      ) {
-        if (
-          mediaType === "movie" &&
-          page < response.moviesResponse.total_pages
-        ) {
-          const savedParams = JSON.parse(
-            sessionStorage.getItem("searchParams"),
-          );
-          setSearchParams({
-            ...savedParams,
-            page: Number(savedParams.page) + 1,
-          });
+        const newQueryParams =
+          searchParams.get("type") === initialResults.movies.mediaType
+            ? newSessionParams.movie
+            : newSessionParams.tv;
 
-          setQuery(savedParams.q);
-          setMediaType(savedParams.type);
-          setPage(savedParams.page);
-          performSearch(savedParams.q, Number(savedParams.page));
-        } else if (
-          mediaType === "tv" &&
-          page < response.seriesResponse.total_pages
-        ) {
-          searchParams.set("page", Number(searchParams.get("page")) + 1);
-        }
+        setQuery(newQueryParams.q);
+        setInputQuery(newQueryParams.q);
+        setMediaType(newQueryParams.type);
+        setMoviesPage(newSessionParams.movie.page);
+        setSeriesPage(newSessionParams.tv.page);
+        sessionStorage.setItem(
+          "searchParams",
+          JSON.stringify(newSessionParams),
+        );
       }
     };
-
-    window.addEventListener("scroll", handleScroll);
-    return () => window.removeEventListener("scroll", handleScroll);
+    initializeSearchOnQueryParams();
   }, [
-    mediaType,
-    page,
-    response.moviesResponse.total_pages,
-    response.seriesResponse.total_pages,
+    initialResults.movies.mediaType,
+    query,
+    searchParams,
+    seriesPage,
+    moviesPage,
   ]);
 
+  useEffect(() => {
+    console.log("performSearchOnQuery");
+    const performSearchOnQuery = async () => {
+      query && (await performSearch());
+    };
+    performSearchOnQuery();
+  }, [query, moviesPage, seriesPage]);
+
+  const handlePageChange = (page) => {
+    setSearchParams((prev) => ({
+      ...Object.fromEntries(prev.entries()),
+      page: page,
+    }));
+    if (mediaType === initialResults.movies.mediaType) {
+      setMoviesPage(page);
+    } else {
+      setSeriesPage(page);
+    }
+  };
+
+  // console.log(seriesPage);
+  // console.log(moviesPage);
   return (
     <div className="relative overflow-y-scroll z-10 rounded-b-xl top-20 md:top-24 px-4 md:px-16 pb-20 text-white grid grid-cols-1 gap-3 md:flex md:flex-wrap md:gap-y-3 lg:grid lg:grid-cols-3">
       <SearchBar
-        query={query}
-        onQueryChange={setQuery}
+        query={inputQuery}
+        onQueryChange={setInputQuery}
         onSubmit={handleSubmit}
       />
 
-      {response?.seriesResponse.total_results ||
-      response?.moviesResponse.total_results ? (
-        <div className="flex mx-auto gap-3 my-4">
-          <div className="relative">
-            <button
-              className={`border border-gray-400 rounded-md py-4 md:py-5 px-6 md:px-7 w-[30vw] text-base lg:text-lg font-semibold transition ${mediaType === "movie" ? "bg-gray-100 text-red-600 border-red-500" : "text-gray-200"}`}
-              onClick={() => changeResults("movie")}
+      {results.movies.total_results || results.series.total_results ? (
+        <>
+          <div className="flex mx-auto gap-3 my-4">
+            <SearchResultsToggle
+              isActive={mediaType === initialResults.movies.mediaType}
+              onClick={() => changeResults(initialResults.movies.mediaType)}
+              count={results.movies.total_results}
             >
               Movies
-            </button>
-            <div className="absolute -top-2 -right-2 p-1 bg-red-500 text-white rounded-full min-h-8 min-w-8 flex justify-center items-center text-xs lg:text-sm font-bold">
-              <span>{response.moviesResponse.total_results}</span>
-            </div>
-          </div>
-          <div className="relative">
-            <button
-              className={`border border-gray-400 rounded-md py-4 md:py-5 px-6 md:px-7 w-[30vw] text-base lg:text-lg font-semibold transition ${mediaType === "tv" ? "bg-gray-100 text-red-600 border-red-500" : "text-gray-200"}`}
-              onClick={() => changeResults("tv")}
+            </SearchResultsToggle>
+            <SearchResultsToggle
+              isActive={mediaType === initialResults.series.mediaType}
+              onClick={() => changeResults(initialResults.series.mediaType)}
+              count={results.series.total_results}
             >
               Series
-            </button>
-            <div className="absolute -top-2 -right-2 p-1 bg-red-500 text-white rounded-full min-h-8 min-w-8 flex justify-center items-center text-xs lg:text-sm font-bold">
-              <span>{response.seriesResponse.total_results}</span>
-            </div>
+            </SearchResultsToggle>
           </div>
+          <MediaSection
+            mediaData={
+              mediaType === initialResults.movies.mediaType
+                ? results.movies.results
+                : results.series.results
+            }
+            mediaType={mediaType}
+            displayGrid
+            isLoading={isLoading}
+          />
+          <Pagination
+            currentPage={
+              mediaType === initialResults.movies.mediaType
+                ? moviesPage
+                : seriesPage
+            }
+            totalPages={
+              mediaType === initialResults.movies.mediaType
+                ? results.movies.total_pages
+                : results.series.total_pages
+            }
+            onPageChange={handlePageChange}
+          />
+        </>
+      ) : !isLoading && !query ? (
+        <div className="text-center mt-10">
+          Here will be displayed results of the search if something would be
+          found.
         </div>
-      ) : null}
-      <MediaSection
-        displayGrid
-        mediaData={
-          mediaType === "movie"
-            ? response?.moviesResponse.results
-            : response?.seriesResponse.results
-        }
-        mediaType={mediaType}
-        isLoading={isLoading}
-      />
+      ) : (
+        !isLoading && (
+          <div className="text-center mt-10">
+            No results found. Please try a different search.
+          </div>
+        )
+      )}
     </div>
   );
 };
 
 export default FullSearchResults;
-
-// import { useCallback, useEffect, useState } from "react";
-// import { useSearchParams } from "react-router-dom";
-// import { useTMDB } from "../hooks/useTMDB.js";
-// import SearchBar from "../Components/SearchBar.jsx";
-// import MediaSection from "../Components/MediaSection.jsx";
-//
-// const FullSearchResults = () => {
-//   const tmdb = useTMDB();
-//   const [searchParams, setSearchParams] = useSearchParams();
-//   const [query, setQuery] = useState(searchParams.get("q") || "");
-//   const [mediaType, setMediaType] = useState(
-//     searchParams.get("type") || "movie",
-//   );
-//   const [page, setPage] = useState(Number(searchParams.get("page")) || 1);
-//   const [isLoading, setIsLoading] = useState(false);
-//   const [response, setResponse] = useState({
-//     moviesResponse: { results: [] },
-//     seriesResponse: { results: [] },
-//   });
-//
-//   const performSearch = useCallback(
-//     async (query, page = 1, appendResults = false) => {
-//       setIsLoading(true);
-//       try {
-//         const moviesResponse = await tmdb.searchMovies(query, { page });
-//         const seriesResponse = await tmdb.searchSeries(query, { page });
-//
-//         setResponse((prevResponse) => ({
-//           moviesResponse: {
-//             ...moviesResponse,
-//             results: appendResults
-//               ? [
-//                   ...prevResponse.moviesResponse.results,
-//                   ...moviesResponse.results,
-//                 ]
-//               : moviesResponse.results,
-//           },
-//           seriesResponse: {
-//             ...seriesResponse,
-//             results: appendResults
-//               ? [
-//                   ...prevResponse.seriesResponse.results,
-//                   ...seriesResponse.results,
-//                 ]
-//               : seriesResponse.results,
-//           },
-//         }));
-//       } catch (error) {
-//         console.error(error);
-//       } finally {
-//         setIsLoading(false);
-//       }
-//     },
-//     [tmdb],
-//   );
-//
-//   const handleSubmit = async (e) => {
-//     e.preventDefault();
-//     setSearchParams({ q: query, type: mediaType, page: 1 });
-//     await performSearch(query, 1, false);
-//   };
-//
-//   const changeResults = (mediaType) => {
-//     setMediaType(mediaType);
-//     const newParams = { q: query, type: mediaType, page: 1 };
-//     setSearchParams(newParams);
-//     sessionStorage.setItem("searchParams", JSON.stringify(newParams));
-//     setPage(1);
-//     performSearch(query, 1, false);
-//   };
-//
-//   useEffect(() => {
-//     const savedParams = JSON.parse(sessionStorage.getItem("searchParams"));
-//     if (savedParams) {
-//       setSearchParams(savedParams);
-//       setQuery(savedParams.q);
-//       setMediaType(savedParams.type);
-//       setPage(savedParams.page);
-//       performSearch(savedParams.q, savedParams.page, true);
-//     }
-//   }, [performSearch]);
-//
-//   useEffect(() => {
-//     if (searchParams.get("q")) {
-//       sessionStorage.setItem(
-//         "searchParams",
-//         JSON.stringify({
-//           q: searchParams.get("q"),
-//           type: searchParams.get("type"),
-//           page: searchParams.get("page"),
-//         }),
-//       );
-//     } else {
-//       sessionStorage.clear();
-//     }
-//   }, [searchParams]);
-//
-//   useEffect(() => {
-//     const handleScroll = () => {
-//       if (
-//         window.innerHeight + document.documentElement.scrollTop >=
-//           document.documentElement.offsetHeight - 50 &&
-//         !isLoading
-//       ) {
-//         setPage((prevPage) => prevPage + 1);
-//       }
-//     };
-//
-//     window.addEventListener("scroll", handleScroll);
-//     return () => window.removeEventListener("scroll", handleScroll);
-//   }, [isLoading]);
-//
-//   useEffect(() => {
-//     if (page > 1) {
-//       performSearch(query, page, true);
-//     }
-//   }, [page, query, performSearch]);
-//
-//   return (
-//     <div className="relative overflow-y-scroll z-10 rounded-b-xl top-20 md:top-24 px-4 md:px-16 pb-20 text-white grid grid-cols-1 gap-3 md:flex md:flex-wrap md:gap-y-3 lg:grid lg:grid-cols-3">
-//       <SearchBar
-//         query={query}
-//         onQueryChange={setQuery}
-//         onSubmit={handleSubmit}
-//       />
-//
-//       {response?.seriesResponse.total_results ||
-//       response?.moviesResponse.total_results ? (
-//         <div className="flex mx-auto gap-3 my-4">
-//           <div className="relative">
-//             <button
-//               className={`border border-gray-400 rounded-md py-4 md:py-5 px-6 md:px-7 w-[30vw] text-base lg:text-lg font-semibold transition ${
-//                 mediaType === "movie"
-//                   ? "bg-gray-100 text-red-600 border-red-500"
-//                   : "text-gray-200"
-//               }`}
-//               onClick={() => changeResults("movie")}
-//             >
-//               Movies
-//             </button>
-//             <div className="absolute -top-2 -right-2 p-1 bg-red-500 text-white rounded-full min-h-8 min-w-8 flex justify-center items-center text-xs lg:text-sm font-bold">
-//               <span>{response.moviesResponse.total_results}</span>
-//             </div>
-//           </div>
-//           <div className="relative">
-//             <button
-//               className={`border border-gray-400 rounded-md py-4 md:py-5 px-6 md:px-7 w-[30vw] text-base lg:text-lg font-semibold transition ${
-//                 mediaType === "tv"
-//                   ? "bg-gray-100 text-red-600 border-red-500"
-//                   : "text-gray-200"
-//               }`}
-//               onClick={() => changeResults("tv")}
-//             >
-//               Series
-//             </button>
-//             <div className="absolute -top-2 -right-2 p-1 bg-red-500 text-white rounded-full min-h-8 min-w-8 flex justify-center items-center text-xs lg:text-sm font-bold">
-//               <span>{response.seriesResponse.total_results}</span>
-//             </div>
-//           </div>
-//         </div>
-//       ) : null}
-//       <MediaSection
-//         displayGrid
-//         mediaData={
-//           mediaType === "movie"
-//             ? response?.moviesResponse.results
-//             : response?.seriesResponse.results
-//         }
-//         mediaType={mediaType}
-//         isLoading={isLoading}
-//       />
-//     </div>
-//   );
-// };
-//
-// export default FullSearchResults;
