@@ -66,7 +66,6 @@ const Search = () => {
       ),
     };
     setSearchParams(params);
-    // sessionStorage.setItem("searchParams", JSON.stringify(params)); // Оновлення sessionStorage
   };
 
   const changeResults = (mediaType) => {
@@ -79,7 +78,6 @@ const Search = () => {
       ),
     };
     setSearchParams(newParams);
-    // sessionStorage.setItem("searchParams", JSON.stringify(newParams)); // Оновлення sessionStorage
   };
 
   useEffect(() => {
@@ -95,6 +93,7 @@ const Search = () => {
   useEffect(() => {
     const initializeSearchOnQueryParams = async () => {
       console.log("initializeSearchOnQueryParams");
+      const savedParams = JSON.parse(sessionStorage.getItem("searchParams"));
       if (searchParams.size) {
         const newSessionParams = {
           mediaType: searchParams.get("type"),
@@ -104,7 +103,7 @@ const Search = () => {
             page:
               searchParams.get("type") === initialResults.movies.mediaType
                 ? Number(searchParams.get("page"))
-                : moviesPage,
+                : savedParams?.movie.page || moviesPage,
           },
           tv: {
             q: searchParams.get("q"),
@@ -112,7 +111,7 @@ const Search = () => {
             page:
               searchParams.get("type") === initialResults.series.mediaType
                 ? Number(searchParams.get("page"))
-                : seriesPage,
+                : savedParams?.tv.page || moviesPage,
           },
         };
 
