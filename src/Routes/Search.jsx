@@ -22,6 +22,7 @@ const Search = () => {
       mediaType: "tv",
     },
   };
+
   const [query, setQuery] = useState("");
   const [inputQuery, setInputQuery] = useState("");
   const [mediaType, setMediaType] = useState(initialResults.movies.mediaType);
@@ -30,6 +31,19 @@ const Search = () => {
   const [results, setResults] = useState(initialResults);
   const [isLoading, setIsLoading] = useState(false);
   const [searchParams, setSearchParams] = useSearchParams();
+  const initialSessionParams = {
+    mediaType: searchParams.get("type"),
+    movie: {
+      q: searchParams.get("q"),
+      type: initialResults.movies.mediaType,
+      page: 1,
+    },
+    tv: {
+      q: searchParams.get("q"),
+      type: initialResults.series.mediaType,
+      page: 1,
+    },
+  };
 
   const performSearch = async () => {
     setIsLoading(true);
@@ -58,14 +72,18 @@ const Search = () => {
     console.log("submit");
     e.preventDefault();
     setQuery(inputQuery);
+    setMoviesPage(initialSessionParams.movie.page);
+    setSeriesPage(initialSessionParams.tv.page);
     const params = {
       q: inputQuery,
       type: mediaType,
-      page: String(
-        mediaType === initialResults.movies.mediaType ? moviesPage : seriesPage,
-      ),
+      page: "1",
     };
     setSearchParams(params);
+    sessionStorage.setItem(
+      "searchParams",
+      JSON.stringify(initialSessionParams),
+    );
   };
 
   const changeResults = (mediaType) => {
@@ -96,18 +114,16 @@ const Search = () => {
       const savedParams = JSON.parse(sessionStorage.getItem("searchParams"));
       if (searchParams.size) {
         const newSessionParams = {
-          mediaType: searchParams.get("type"),
+          ...initialSessionParams,
           movie: {
-            q: searchParams.get("q"),
-            type: initialResults.movies.mediaType,
+            ...initialSessionParams.movie,
             page:
               searchParams.get("type") === initialResults.movies.mediaType
                 ? Number(searchParams.get("page"))
                 : savedParams?.movie.page || moviesPage,
           },
           tv: {
-            q: searchParams.get("q"),
-            type: initialResults.series.mediaType,
+            ...initialSessionParams.tv,
             page:
               searchParams.get("type") === initialResults.series.mediaType
                 ? Number(searchParams.get("page"))
