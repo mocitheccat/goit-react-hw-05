@@ -1,3 +1,6 @@
+const VITE_ONLINE_API_TOKEN = import.meta.env.VITE_ONLINE_API_TOKEN;
+const VITE_ONLINE_API_URL = import.meta.env.VITE_ONLINE_API_URL;
+
 export const createFullImgUrlForBillBoard = (imageWidth, imageObjArray) => {
   if (!Array.isArray(imageObjArray)) {
     throw new Error("imageObjArray must be an array");
@@ -42,8 +45,8 @@ export const online = async (tmdb, mediaType, mediaID) => {
   try {
     const imdbID = await tmdb.getIMDBId(mediaID, mediaType);
 
-    const onlineStr = `${import.meta.env.VITE_ONLINE_API_URL}${import.meta.env.VITE_ONLINE_API_TOKEN}&imdb_id=${imdbID}`;
-    console.log(onlineStr);
+    const onlineStr = `${VITE_ONLINE_API_URL}${VITE_ONLINE_API_TOKEN}&imdb_id=${imdbID}`;
+    // console.log(onlineStr);
 
     const onlineResponse = await fetch(onlineStr);
     const data = await onlineResponse.json();
