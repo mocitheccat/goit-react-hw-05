@@ -15,12 +15,14 @@ import { MdOutlineTheaterComedy } from "react-icons/md";
 import { createFullImgUrl } from "../utils/helpers.js";
 import Credits from "../Components/Credits.jsx";
 import TrailerModal from "../Components/TrailerModal.jsx";
+import posterPlaceholder from "../../public/images/poster-placeholder.png";
 
 const MediaDetailPage = () => {
   const { id: mediaID, mediaType } = useParams();
   const tmdb = useTMDB();
   const [fullMediaData, setFullMediaData] = useState(null);
   const [credits, setCredits] = useState({});
+  const [isOnlineWatch, setIsOnlineWatch] = useState(false);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [isOpenTrailerModal, setIsOpenTrailerModal] = useState(false);
@@ -62,6 +64,11 @@ const MediaDetailPage = () => {
     setIsOpenTrailerModal(true);
   };
 
+  const handleOnlineWatch = () => {
+    setIsOnlineWatch(true);
+    setIsOpenTrailerModal(true);
+  };
+
   return (
     <>
       <div className="fixed w-screen h-screen">
@@ -75,20 +82,20 @@ const MediaDetailPage = () => {
           <img
             src={
               createFullImgUrl("original", fullMediaData.poster_path) ||
-              "../../public/images/poster-placeholder.png"
+              posterPlaceholder
             }
             alt="Backdrop"
             className="absolute inset-0 w-screen h-screen object-cover brightness-[40%]"
           />
-          // <div className="absolute inset-0 flex items-center justify-center">
-          //   <ThreeDots color="#FFFFFF" />
-          // </div>
         )}
       </div>
       <div className="relative overflow-y-scroll z-10 rounded-b-xl top-20 md:top-24 px-4 md:px-16 pb-20 text-white grid grid-cols-2 gap-3 md:flex md:flex-wrap md:gap-x-2 md:gap-y-3 lg:grid lg:grid-cols-3">
         <img
-          className="w-[40vw] h-full md:w-[25vw] lg:w-[20vw] rounded-xl border-2 border-gray-200 shadow-2xl shadow-gray-200/50"
-          src={createFullImgUrl(500, fullMediaData.poster_path)}
+          className="w-[40vw] h-full md:w-[25vw] lg:w-[20vw] rounded-xl border-2 border-gray-200 shadow-2xl shadow-gray-200/50 object-cover"
+          src={
+            createFullImgUrl(500, fullMediaData.poster_path) ||
+            posterPlaceholder
+          }
           alt={fullMediaData.title || fullMediaData.name}
         />
 
@@ -166,14 +173,22 @@ const MediaDetailPage = () => {
               </p>
             </div>
           ) : null}
-
-          <button
-            className="text gray-300 flex items-center justify-center px-4 py-1 rounded-md border border-gray-400 bg-gray-400/30 hover:border-red-500 hover:bg-zinc-800/90  hover:text-red-600"
-            onClick={handleWatchTrailer}
-          >
-            <RiYoutubeLine className="w-6 h-6 mr-1" />
-            Watch trailer
-          </button>
+          <div className="flex items-center justify-between">
+            <button
+              className="text gray-300 flex items-center justify-center px-4 py-1 rounded-md border border-gray-400 bg-gray-400/30 hover:border-red-500 hover:bg-zinc-800/90  hover:text-red-600"
+              onClick={handleWatchTrailer}
+            >
+              <RiYoutubeLine className="w-6 h-6 mr-1" />
+              Watch trailer
+            </button>
+            <button
+              className="text gray-300 flex items-center justify-center px-4 py-1 rounded-md border border-gray-400 bg-gray-400/30 hover:border-red-500 hover:bg-zinc-800/90  hover:text-red-600"
+              onClick={handleOnlineWatch}
+            >
+              <RiYoutubeLine className="w-6 h-6 mr-1" />
+              Watch online
+            </button>
+          </div>
           <h2 className="text-xl text-gray-400 md:text-3xl font-semibold mb-1 mt-8">
             Overview
           </h2>
@@ -189,7 +204,11 @@ const MediaDetailPage = () => {
             mediaID,
             title: fullMediaData.title || fullMediaData.name,
           }}
-          closeModal={() => setIsOpenTrailerModal(false)}
+          closeModal={() => {
+            setIsOpenTrailerModal(false);
+            setIsOnlineWatch(false);
+          }}
+          isOnlineWatch={isOnlineWatch}
         />
       )}
     </>

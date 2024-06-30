@@ -302,6 +302,13 @@ class TMDB {
       creditsParams,
     );
   }
+
+  async getIMDBId(id, mediaType) {
+    const response = await this.#makeRequest(
+      `/${mediaType}/${id}/external_ids`,
+    );
+    return response.imdb_id;
+  }
 }
 
 export default TMDB;

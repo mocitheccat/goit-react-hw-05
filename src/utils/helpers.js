@@ -12,9 +12,11 @@ export const createFullImgUrlForBillBoard = (imageWidth, imageObjArray) => {
 };
 
 export const createFullImgUrl = (imageWidth, imagePath) => {
-  return `https://image.tmdb.org/t/p/${
-    imageWidth > 1 ? `w${imageWidth}` : "original"
-  }${imagePath}`;
+  if (imagePath)
+    return `https://image.tmdb.org/t/p/${
+      imageWidth > 1 ? `w${imageWidth}` : "original"
+    }${imagePath}`;
+  return null;
 };
 
 export const createRandomMediaBackdropImage = (imageUrlsArray) => {
@@ -34,4 +36,21 @@ export const filterResultsByMediaType = (results, types) => {
     acc[type] = results.filter((result) => result.media_type === type);
     return acc;
   }, {});
+};
+
+export const online = async (tmdb, mediaType, mediaID) => {
+  try {
+    const imdbID = await tmdb.getIMDBId(mediaID, mediaType);
+
+    const onlineStr = `${import.meta.env.VITE_ONLINE_API_URL}${import.meta.env.VITE_ONLINE_API_TOKEN}&imdb_id=${imdbID}`;
+    console.log(onlineStr);
+
+    const onlineResponse = await fetch(onlineStr);
+    const data = await onlineResponse.json();
+    console.log(data);
+    // console.log(onlineResponse);
+    return data.data[0].iframe_src;
+  } catch (error) {
+    console.log(error);
+  }
 };
