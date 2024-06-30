@@ -4,7 +4,6 @@ import { useLocation } from "react-router-dom";
 const Layout = ({ children }) => {
   const location = useLocation();
   const blockedLayout = ["/login"];
-  // console.log(location);
 
   if (blockedLayout.includes(location.pathname)) {
     return <>{children}</>;

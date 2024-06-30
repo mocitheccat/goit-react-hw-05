@@ -3,11 +3,10 @@ import LoginPage from "./Routes/LoginPage.jsx";
 import HomePage from "./Routes/HomePage.jsx";
 import ProtectedRoute from "./Routes/Protected/ProtectedRoute";
 import { TMDBProvider } from "./Context/ApiContext";
-import SearchPage from "./Routes/SearchPage.jsx";
 import Layout from "./Components/Layout.jsx";
 import MediaDetailPage from "./Routes/MediaDetailPage.jsx";
 import UserSavesList from "./Routes/UserSavesList.jsx";
-import FullSearchResults from "./Routes/FullSearchResults.jsx";
+import Search from "./Routes/Search.jsx";
 
 function App() {
   return (
@@ -26,23 +25,14 @@ function App() {
               </ProtectedRoute>
             }
           />
-          {/*<Route*/}
-          {/*  path="/search"*/}
-          {/*  element={*/}
-          {/*    <ProtectedRoute>*/}
-          {/*      <SearchPage />*/}
-          {/*    </ProtectedRoute>*/}
-          {/*  }*/}
-          {/*>*/}
           <Route
             path="/search"
             element={
               <ProtectedRoute>
-                <FullSearchResults />
+                <Search />
               </ProtectedRoute>
             }
           />
-          {/*</Route>*/}
 
           {/* Media Detail Routes (combined for movies and tv shows) */}
           <Route

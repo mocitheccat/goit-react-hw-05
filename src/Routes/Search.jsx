@@ -6,7 +6,7 @@ import MediaSection from "../Components/MediaSection.jsx";
 import SearchResultsToggle from "../Components/SearchResultsToggle.jsx";
 import Pagination from "../Components/Pagination.jsx";
 
-const FullSearchResults = () => {
+const Search = () => {
   const tmdb = useTMDB();
   const initialResults = {
     movies: {
@@ -58,11 +58,6 @@ const FullSearchResults = () => {
     console.log("submit");
     e.preventDefault();
     setQuery(inputQuery);
-    // const params = {
-    //   q: inputQuery,
-    //   type: mediaType,
-    //   page: { movie: "1", tv: "1" },
-    // };
     const params = {
       q: inputQuery,
       type: mediaType,
@@ -100,22 +95,6 @@ const FullSearchResults = () => {
   useEffect(() => {
     const initializeSearchOnQueryParams = async () => {
       console.log("initializeSearchOnQueryParams");
-      // if (searchParams.size) {
-      //   const newParams = {
-      //     q: searchParams.get("q"),
-      //     type: searchParams.get("type"),
-      //     page: searchParams.get("page"),
-      //   };
-      //   setQuery(newParams.q);
-      //   setInputQuery(newParams.q);
-      //   setMediaType(newParams.type);
-      //   // Need to fix when change media type and page, only one media type remember its page
-      //
-      //   newParams.type === initialResults.movies.mediaType
-      //     ? (setMoviesPage(Number(newParams.page)))
-      //     : setSeriesPage(Number(newParams.page));
-      //   sessionStorage.setItem("searchParams", JSON.stringify(newParams)); // Оновлення sessionStorage
-      // }
       if (searchParams.size) {
         const newSessionParams = {
           mediaType: searchParams.get("type"),
@@ -182,8 +161,6 @@ const FullSearchResults = () => {
     }
   };
 
-  // console.log(seriesPage);
-  // console.log(moviesPage);
   return (
     <div className="relative overflow-y-scroll z-10 rounded-b-xl top-20 md:top-24 px-4 md:px-16 pb-20 text-white grid grid-cols-1 gap-3 md:flex md:flex-wrap md:gap-y-3 lg:grid lg:grid-cols-3">
       <SearchBar
@@ -250,4 +227,4 @@ const FullSearchResults = () => {
   );
 };
 
-export default FullSearchResults;
+export default Search;
